@@ -99,19 +99,94 @@ graph LR
 
 ## 2.5 Autómatas básicos (patrones que conviene memorizar)
 
-Con `Σ = {a}` y contando ocurrencias de `a`:
+Con `Σ = {a}` y contando ocurrencias de `a`. Memoriza estos cinco moldes: casi
+todo AFD de una sola letra es una combinación de ellos.
 
-| Autómata | Lenguaje |
-|---|---|
-| `aⁿ, n ≥ 0` | acepta ε; un lazo `a` en el estado inicial-final |
-| `aⁿ, n > 0` | un estado final distinto tras la primera `a` |
-| `aⁿ, n par` | 2 estados alternando; final el de índice par |
-| `aⁿ, n impar` | 2 estados alternando; final el impar |
-| `aⁿ, n múltiplo de k` | ciclo de `k` estados; final `q0` |
+**1) `aⁿ, n ≥ 0`** — acepta también `ε`; el estado inicial **es** final, con un
+lazo `a`.
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(((q0)))
+    q0 -->|a| q0
+```
+
+**2) `aⁿ, n > 0`** — el inicial **no** es final; tras la primera `a` se llega a un
+final que se auto-mantiene.
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1(((q1)))
+    q0 -->|a| q1
+    q1 -->|a| q1
+```
+
+**3) `aⁿ, n par`** — dos estados que alternan; el final es el de conteo **par**
+(el inicial, que también acepta `ε`).
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(((q0)))
+    q1((q1))
+    q0 -->|a| q1
+    q1 -->|a| q0
+```
+
+**4) `aⁿ, n impar`** — misma estructura, pero ahora el final es el estado de
+conteo **impar** (`ε` ya no se acepta).
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1(((q1)))
+    q0 -->|a| q1
+    q1 -->|a| q0
+```
+
+**5) `aⁿ, n múltiplo de k`** — un **ciclo de `k` estados**; el final es `q0`
+(ejemplo con `k = 3`; para "no múltiplo de k" bastaría con marcar como finales los
+otros estados).
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(((q0)))
+    q1((q1))
+    q2((q2))
+    q0 -->|a| q1
+    q1 -->|a| q2
+    q2 -->|a| q0
+```
 
 **Diseño con condiciones de paridad combinadas** (producto cartesiano). Para
 `L = {ω / #a impar y #b par}` se usan 4 estados `(#a mod 2, #b mod 2)`; leer `a`
-cambia la paridad de a, leer `b` la de b; final = `(1, 0)`.
+cambia la paridad de a, leer `b` la de b; final = `(1, 0)`. Es el "cuadrado" que
+combina dos patrones de paridad a la vez:
+
+```mermaid
+graph LR
+    ini([inicio]) --> q00
+    q00(("q00<br/>(a par, b par)"))
+    q10((("q10<br/>(a impar, b par)")))
+    q01(("q01<br/>(a par, b impar)"))
+    q11(("q11<br/>(a impar, b impar)"))
+    q00 -->|a| q10
+    q00 -->|b| q01
+    q10 -->|a| q00
+    q10 -->|b| q11
+    q01 -->|a| q11
+    q01 -->|b| q00
+    q11 -->|a| q01
+    q11 -->|b| q10
+```
+
+> **Regla mnemotécnica:** contar "módulo k" ⇒ **ciclo de k estados**; combinar dos
+> condiciones independientes ⇒ **producto cartesiano** (multiplica los estados).
 
 ## 2.6 Equivalencia AFND → AFD (construcción de subconjuntos)
 
