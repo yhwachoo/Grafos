@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prueba Sumativa — Unidad 3: Teoría de Autómatas</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 14mm 18mm 14mm;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    color: #1a1a1a;
+    font-size: 11.5pt;
+    line-height: 1.45;
+  }
+  .header {
+    text-align: center;
+    border-bottom: 2px solid #222;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 15pt;
+    margin: 0 0 2px 0;
+  }
+  .header .subt {
+    font-size: 10pt;
+    color: #333;
+  }
+  .datos {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 4px 0;
+    font-size: 10.5pt;
+  }
+  .datos-col { flex: 1; }
+  .line {
+    display: inline-block;
+    border-bottom: 1px solid #444;
+    min-width: 160px;
+    margin-left: 4px;
+  }
+  .instrucciones {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 9.8pt;
+    margin: 10px 0 14px 0;
+  }
+  .instrucciones ul { margin: 4px 0 0 0; padding-left: 18px; }
+  .puntaje-box {
+    font-size: 9.5pt;
+    text-align: right;
+    margin-top: 4px;
+  }
+  table.puntaje {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 14px 0;
+    font-size: 9.5pt;
+  }
+  table.puntaje th, table.puntaje td {
+    border: 1px solid #999;
+    padding: 3px 6px;
+    text-align: center;
+  }
+  table.puntaje th { background: #eee; }
+  .pregunta {
+    margin-top: 18px;
+    page-break-inside: avoid;
+  }
+  .pregunta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1.5px solid #444;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+  }
+  .pregunta-header h2 {
+    font-size: 12.5pt;
+    margin: 0;
+  }
+  .pts {
+    font-size: 10pt;
+    font-weight: bold;
+    color: #444;
+    white-space: nowrap;
+  }
+  .enunciado {
+    margin-bottom: 6px;
+  }
+  .enunciado code, code {
+    font-family: "Courier New", monospace;
+    background: #f0f0f0;
+    padding: 0 2px;
+    border-radius: 2px;
+    font-size: 0.95em;
+  }
+  .sub {
+    margin: 6px 0 6px 4px;
+  }
+  .respuesta-area {
+    border: 1px dashed #999;
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 27px,
+        #dcdcdc 28px
+      );
+    margin-top: 6px;
+  }
+  .respuesta-area.small { height: 90px; }
+  .respuesta-area.medium { height: 150px; }
+  .respuesta-area.large { height: 220px; }
+  .respuesta-area.xlarge { height: 300px; }
+  .grid-label {
+    font-size: 8.8pt;
+    color: #666;
+    margin: 2px 0 0 2px;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+  .diagrama-espacio {
+    border: 1px solid #bbb;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 9px, #eee 10px
+    ), repeating-linear-gradient(
+      90deg, transparent, transparent 9px, #eee 10px
+    );
+    height: 130px;
+    margin-top: 6px;
+    position: relative;
+  }
+  .diagrama-espacio::before {
+    content: "Diagrama:";
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    font-size: 8pt;
+    color: #888;
+    font-family: sans-serif;
+  }
+  .footer-note {
+    text-align: center;
+    font-size: 9pt;
+    color: #666;
+    margin-top: 24px;
+    border-top: 1px solid #ccc;
+    padding-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Prueba Sumativa — Unidad 3: Teoría de Autómatas</h1>
+  <div class="subt">Grafos y Lenguajes Formales · UTEM &nbsp;|&nbsp; Duración: 60 minutos &nbsp;|&nbsp; Puntaje total: 60 puntos</div>
+</div>
+
+<div class="datos">
+  <div class="datos-col">Nombre: <span class="line" style="min-width:220px;"></span></div>
+  <div class="datos-col">RUT: <span class="line" style="min-width:120px;"></span></div>
+</div>
+<div class="datos">
+  <div class="datos-col">Sección: <span class="line" style="min-width:100px;"></span></div>
+  <div class="datos-col">Fecha: <span class="line" style="min-width:100px;"></span></div>
+  <div class="datos-col">Puntaje obtenido: <span class="line" style="min-width:70px;"></span> / 60</div>
+</div>
+
+<div class="instrucciones">
+  <strong>Instrucciones</strong>
+  <ul>
+    <li>Responde con procedimiento completo: tablas, particiones y trazas. Una respuesta sin desarrollo no recibe puntaje.</li>
+    <li>Notación: <code>M = (Q, Σ, δ, q0, F)</code> para autómatas finitos; <code>M = (Q, Σ, Γ, δ, q0, Z, F)</code> para autómatas apiladores.</li>
+    <li>Puedes usar la guía de notación, pero <strong>no</strong> el material de estudio.</li>
+  </ul>
+</div>
+
+<table class="puntaje">
+  <tr>
+    <th>Pregunta</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>Total</th>
+  </tr>
+  <tr>
+    <td>Puntaje máx.</td><td>8</td><td>10</td><td>12</td><td>14</td><td>8</td><td>4</td><td>4</td><td>60</td>
+  </tr>
+  <tr>
+    <td>Obtenido</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+  </tr>
+</table>
+
+<!-- ============ PREGUNTA 1 ============ -->
+<div class="pregunta">
+  <div class="pregunta-header">
+    <h2>Pregunta 1 — Lenguajes y gramáticas</h2>
+    <span class="pts">(8 pts)</span>
+  </div>
+  <div class="enunciado">
+    <div class="sub">
+      <strong>a) (4 pts)</strong> Describe por comprensión el lenguaje generado por:<br>
+      <code>G = ({0,1}, {S,A}, {S → 0S | 1A,  A → 0A | 1A | ε}, S)</code>
+    </div>
+    <div class="respuesta-area medium"></div>
+
+    <div class="sub" style="margin-top:10px;">
+      <strong>b) (4 pts)</strong> Escribe una <strong>gramática regular</strong> para
+      <code>L = {ω ∈ {a,b}* / ω termina en b}</code>.
+    </div>
+    <div class="respuesta-area medium"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 2 ============ -->
+<div class="pregunta">
+  <div class="pregunta-header">
+    <h2>Pregunta 2 — Transformación GRE → GR</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Encuentra una <strong>gramática regular equivalente</strong> aplicando el algoritmo visto en clases.
+    Indica qué producciones ya eran regulares.
+    <br><br>
+    <code>G = ({a,b}, {S,A,B}, {S → aaS | bA | ε,&nbsp; A → abB | b,&nbsp; B → ba | ε}, S)</code>
+  </div>
+  <div class="respuesta-area large"></div>
+</div>
+
+<!-- ============ PREGUNTA 3 (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 3 — AFD vs AFND</h2>
+    <span class="pts">(12 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>Σ = {a, b}</code>. Para el lenguaje de las palabras que <strong>contienen la subcadena
+    <code>ab</code></strong>:
+
+    <div class="sub"><strong>a) (5 pts)</strong> Diseña un <strong>AFD</strong>: quíntupla, tabla de transición y diagrama.</div>
+    <div class="respuesta-area medium"></div>
+    <div class="diagrama-espacio"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (5 pts)</strong> Diseña un <strong>AFND</strong> (δ en conjuntos) y su diagrama.</div>
+    <div class="respuesta-area medium"></div>
+    <div class="diagrama-espacio"></div>
+
+    <div class="sub" style="margin-top:10px;">
+      <strong>c) (2 pts)</strong> Traza en tu <strong>AFND</strong> las palabras <code>bab</code>
+      (debe <strong>aceptar</strong>) y <code>ba</code> (debe <strong>rechazar</strong>).
+    </div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 4 (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 4 — Subconjuntos y minimización</h2>
+    <span class="pts">(14 pts)</span>
+  </div>
+  <div class="enunciado">
+    <div class="sub">
+      <strong>a) (8 pts)</strong> Convierte a <strong>AFD</strong> el siguiente <strong>AFND</strong> por
+      construcción de subconjuntos. Marca los finales y descarta los inalcanzables.
+      <br>
+      <code>δ(q0,a) = {q0,q1}&nbsp;&nbsp; δ(q0,b) = {q0}</code><br>
+      <code>δ(q1,a) = {q2}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; δ(q1,b) = {q2}</code><br>
+      <code>δ(q2,a) = ∅&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; δ(q2,b) = ∅</code>&nbsp;&nbsp;&nbsp;&nbsp;
+      q0 inicial,&nbsp; F = {q2}
+    </div>
+    <div class="respuesta-area large"></div>
+
+    <div class="sub" style="margin-top:10px;">
+      <strong>b) (6 pts)</strong> <strong>Minimiza</strong> el siguiente AFD (q0 inicial, F = {q4}).
+      Muestra las particiones Π₀, Π₁, …
+    </div>
+    <table class="puntaje" style="width:60%; margin-bottom:6px;">
+      <tr><th>δ</th><th>0</th><th>1</th></tr>
+      <tr><td>q0</td><td>q1</td><td>q2</td></tr>
+      <tr><td>q1</td><td>q1</td><td>q3</td></tr>
+      <tr><td>q2</td><td>q2</td><td>q3</td></tr>
+      <tr><td>q3</td><td>q4</td><td>q4</td></tr>
+      <tr><td>q4</td><td>q4</td><td>q4</td></tr>
+    </table>
+    <div class="respuesta-area large"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 5 (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 5 — Autómata apilador</h2>
+    <span class="pts">(8 pts)</span>
+  </div>
+  <div class="enunciado">
+    Diseña un <strong>autómata apilador</strong> que valide <code>L = {aⁿb²ⁿ / n > 0}</code>
+    (el doble de b que de a). Entrega la tabla de transición con <code>Γ = {X, Z}</code>,
+    explica el criterio de aceptación y traza la palabra <code>abb</code>.
+  </div>
+  <div class="respuesta-area large"></div>
+  <div class="diagrama-espacio"></div>
+</div>
+
+<!-- ============ PREGUNTA 6 ============ -->
+<div class="pregunta">
+  <div class="pregunta-header">
+    <h2>Pregunta 6 — Expresiones regulares</h2>
+    <span class="pts">(4 pts)</span>
+  </div>
+  <div class="enunciado">
+    <div class="sub"><strong>a) (2 pts)</strong> Describe por comprensión <code>L((0+1)* 00 (0+1)*)</code>.</div>
+    <div class="respuesta-area small"></div>
+
+    <div class="sub" style="margin-top:10px;">
+      <strong>b) (2 pts)</strong> Escribe una RegEx sobre <code>{a,b}</code> para "palabras que contienen
+      <strong>al menos una a y al menos una b</strong>".
+    </div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 7 ============ -->
+<div class="pregunta">
+  <div class="pregunta-header">
+    <h2>Pregunta 7 — Máquina de Turing</h2>
+    <span class="pts">(4 pts)</span>
+  </div>
+  <div class="enunciado">
+    Describe (estados y movimientos) una <strong>MT</strong> que calcule el <strong>sucesor</strong>
+    <code>f(n) = n + 1</code> en sistema unitario. Entrada <code>|ⁿ</code>, salida <code>|ⁿ⁺¹</code>.
+    Ejemplo: <code>|||</code> (3) → <code>||||</code> (4).
+  </div>
+  <div class="respuesta-area medium"></div>
+</div>
+
+<div class="footer-note">
+  Fin de la prueba. Revisa tus trazas antes de entregar. — Unidad 3: Teoría de Autómatas · Grafos y Lenguajes Formales
+</div>
+
+</body>
+</html>

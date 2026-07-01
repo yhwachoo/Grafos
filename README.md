@@ -10,8 +10,9 @@ las clases U3C1–U3C4, el apunte de Autómatas Finitos y el ejercicio AFD vs AF
    regulares y regulares extendidas).
 2. Autómatas finitos: AFD, AFND y AFND-ε, tablas de transición, equivalencia y
    minimización; autómatas modelo y traductores.
-3. Gramáticas libres de contexto, autómatas apiladores y máquinas de Turing.
-4. Expresiones regulares y su relación con los AFND-ε.
+3. Gramáticas libres de contexto y autómatas apiladores.
+4. Máquinas de Turing.
+5. Expresiones regulares y su relación con los AFND-ε.
 
 ## Estructura del repositorio
 
@@ -32,6 +33,8 @@ control/
 prueba/
   prueba.md                  Prueba sumativa (60 min, 60 pts)
   solucionario.md            Solucionario completo con puntajes
+  prueba-imprimible.html     Versión para imprimir y resolver a mano
+  prueba-imprimible.pdf      Misma versión, ya en PDF (A4, lista para imprimir)
 ```
 
 ## Cómo usar este material
