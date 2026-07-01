@@ -158,6 +158,27 @@ graph LR
     q11 -->|1| q10
 ```
 
+**C4 (lectura de diagrama).**
+
+**a)** `M = ({q0,q1,q2}, {0,1}, δ, q0, {q2})` con:
+
+| δ | 0 | 1 |
+|---|---|---|
+| → q0 | q0 | q1 |
+| q1 | q1 | q2 |
+| * q2 | q2 | q0 |
+
+**b)** Leyendo `0` nunca cambia de estado y leyendo `1` **avanza un estado en el
+ciclo** `q0→q1→q2→q0→…`; es decir, el estado en que se termina depende solo de
+`(#1's) mod 3`. Como el final es `q2`:
+```
+L(M) = {ω ∈ {0,1}* / la cantidad de 1's en ω es ≡ 2 (mod 3)}
+```
+
+**c)** `101` (dos `1`s, `2 mod 3 = 2`): `q0→1→q1→0→q1→1→q2` ∈ F ⇒ **ACEPTA** ✓.
+`11011` (cuatro `1`s, `4 mod 3 = 1`): `q0→1→q1→1→q2→0→q2→1→q0→1→q1` ∉ F ⇒
+**RECHAZA** ✓ (coincide con que 4 no es ≡2 mod 3).
+
 ---
 
 ## Tipo D — AFD vs AFND (subcadena `aa`)
@@ -290,6 +311,39 @@ Estado inicial del AFD = `εcl(q0) = {q0,q1} = S0`.
 
 Lenguaje resultante: `L = a* b⁺` (cualquier cantidad de `a`, luego al menos una `b`).
 
+**E3 (lectura de diagrama).**
+
+**a)** Del diagrama: `M = ({q0,q1,q2}, {a,b}, δ, q0, {q2})` con
+```
+δ(q0,a) = {q0}         δ(q0,b) = {q0,q1}
+δ(q1,a) = {q2}         δ(q1,b) = {q2}
+```
+
+**b)** Construcción de subconjuntos desde `S0 = [q0]`:
+
+- `S0=[q0]`: a→`{q0}`=S0; b→`{q0,q1}`=S1
+- `S1=[q0,q1]`: a→`{q0}∪{q2}`=`{q0,q2}`=S2; b→`{q0,q1}∪{q2}`=`{q0,q1,q2}`=S3
+- `S2=[q0,q2]` (final): a→`{q0}`=S0 (q2 no tiene transición con `a`); b→`{q0,q1}`=S1
+- `S3=[q0,q1,q2]` (final): a→`{q0}∪{q2}`=`{q0,q2}`=S2; b→`{q0,q1}∪{q2}`=`{q0,q1,q2}`=S3
+
+| δ_D | a | b |
+|---|---|---|
+| → S0=[q0] | S0 | S1 |
+| S1=[q0,q1] | S2 | S3 |
+| * S2=[q0,q2] | S0 | S1 |
+| * S3=[q0,q1,q2] | S2 | S3 |
+
+Finales `{S2, S3}` (contienen `q2`). Todos alcanzables desde `S0`.
+
+**c)** `L(M) = {ω ∈ {a,b}* / |ω| ≥ 2 y la penúltima letra (segunda desde el
+final) es 'b'}`. El AFND "apuesta" (con la bifurcación `δ(q0,b)={q0,q1}`) a
+que la `b` que se acaba de leer es la penúltima; si acierta, tras leer un
+símbolo más termina en `q2`.
+
+**d)** `ab`: `S0→a→S0→b→S1`. `S1` no es final ⇒ **RECHAZA** ✓ (la penúltima
+letra de `ab` es `a`, no `b`). `ba`: `S0→b→S1→a→S2` (final) ⇒ **ACEPTA** ✓ (la
+penúltima letra de `ba` es `b`).
+
 ---
 
 ## Tipo F — Minimización
@@ -335,6 +389,54 @@ graph LR
     p2 -->|1| p3
     p3 -->|0,1| p3
 ```
+
+**F2 (lectura de diagrama).**
+
+**a)** Tabla extraída del diagrama (`q0` inicial, `F={q1,q3}`):
+
+| δ | a | b |
+|---|---|---|
+| → q0 | q1 | q2 |
+| * q1 | q3 | q2 |
+| q2 | q3 | q0 |
+| * q3 | q1 | q0 |
+
+**b)** `Π₀ = { q0 q2 | q1 q3 }` (no finales | finales).
+
+- Grupo `{q0,q2}`: `q0` con `a`→q1(F), `b`→q2(NF); `q2` con `a`→q3(F),
+  `b`→q0(NF). Ambos van "a→grupo F, b→grupo NF" ⇒ **no se separan** (todavía).
+- Grupo `{q1,q3}`: `q1` con `a`→q3(F), `b`→q2(NF); `q3` con `a`→q1(F),
+  `b`→q0(NF). Ambos "a→grupo F, b→grupo NF" ⇒ **no se separan**.
+
+`Π₁ = Π₀` (estable en la **primera** iteración — atención: esto significa que
+**sí se fusionan**, `{q0,q2}` por un lado y `{q1,q3}` por otro; no hay que
+asumir que "más iteraciones sin cambio" implica "no se puede simplificar más":
+aquí el resultado real es que el AFD de 4 estados **sí** colapsa a 2).
+
+AFD mínimo: `p0={q0,q2}` (no final, inicial), `p1={q1,q3}` (final):
+
+| δ | a | b |
+|---|---|---|
+| → p0 | p1 | p0 |
+| * p1 | p1 | p0 |
+
+**c)** Diagrama del AFD mínimo:
+
+```mermaid
+graph LR
+    ini([inicio]) --> p0
+    p0((p0))
+    p1(((p1)))
+    p0 -->|a| p1
+    p0 -->|b| p0
+    p1 -->|a| p1
+    p1 -->|b| p0
+```
+
+**d)** `L(M) = {ω ∈ {a,b}* / ω termina en 'a'}` — el AFD de 4 estados era una
+versión **no mínima** (redundante) de este mismo lenguaje clásico, que en
+realidad solo necesita 2 estados: "última letra fue `a`" (final) y "última
+letra fue `b`, o aún no se ha leído nada" (no final).
 
 ---
 
@@ -415,6 +517,34 @@ graph LR
     p -->|"ε, Z / Z"| qf
 ```
 
+**G4 (lectura de diagrama).**
+
+**a)** `M = ({q0,q1,qf}, {a,b,x}, {A,B,Z}, δ, q0, Z, {qf})` con (`Y` = cualquier
+símbolo de `Γ`):
+```
+δ(q0, a, Y) = (q0, AY)      δ(q0, b, Y) = (q0, BY)      δ(q0, x, Y) = (q1, Y)
+δ(q1, a, A) = (q1, ε)       δ(q1, b, B) = (q1, ε)
+δ(q1, ε, Z) = (qf, Z)
+```
+
+**b)** `L(M) = {ω x ωʳ / ω ∈ {a,b}*}` — antes de la `x` se apila cada símbolo
+de `ω` (una `A` por cada `a`, una `B` por cada `b`); después de la `x` cada
+símbolo leído debe **coincidir** con el tope (comparación letra a letra contra
+`ω` en orden inverso, que es justo lo que hace una pila).
+
+**c) Criterio de aceptación:** al terminar la entrada, la pila debe quedar
+vacía (solo `Z`) — es decir, cada símbolo leído después de la `x` encontró su
+pareja exacta apilada antes de la `x`, en el orden inverso correcto.
+
+**d)** `abxba` (`ω=ab`, `ωʳ=ba`): apila `a`→`AZ`, apila `b`→`BAZ`; lee `x`→
+pasa a `q1` sin tocar la pila (`BAZ`); lee `b`, compara con tope `B` → coincide,
+`pop`→`AZ`; lee `a`, compara con tope `A` → coincide, `pop`→`Z`; fin de
+entrada con `Z` ⇒ `(q1,ε,Z)→qf` ⇒ **ACEPTA** ✓.
+`abxab` (se espera `ba`, no `ab`): apila igual hasta `BAZ`(q1); lee `a`,
+compara con tope `B` → **no coincide** (no hay regla `δ(q1,a,B)`) ⇒ el hilo
+muere ⇒ **RECHAZA** ✓. Falla en el primer símbolo tras la `x`, porque el
+primer carácter de `ωʳ` debería ser el **último** de `ω` (`b`), no el primero.
+
 ---
 
 ## Tipo H — Máquinas de Turing (1 cinta)
@@ -484,6 +614,29 @@ cantidades a la vez (apilar con un símbolo, desapilar con otro). Para verificar
 excede lo que una sola pila puede "recordar". La MT sí puede, porque su cinta
 permite **recorrerla de ida y vuelta** cuantas veces sea necesario, marcando el
 progreso directamente sobre la entrada.
+
+**H4 (lectura de diagrama).**
+
+**a)** `M = ({q0,q1,qf}, {1}, {1,B}, δ, q0, B, {qf})` con:
+```
+δ(q0, 1) = (q1, 1, D)      δ(q1, 1) = (q0, 1, D)      δ(q0, B) = (qf, B, —)
+```
+`δ(q1, B)` **no está definida** — si la máquina llega a `q1` y lee blanco, se
+detiene ahí mismo, **fuera** de `F`, lo que cuenta como rechazo (no es que
+"calcule algo raro": simplemente no hay regla que aplicar y la ejecución
+termina sin aceptar).
+
+**b)** Cada marca alterna el estado `q0 ⇄ q1`; se llega a `qf` únicamente si el
+blanco se lee estando en `q0`, es decir, tras una cantidad **par** de marcas.
+```
+L(M) = {1ⁿ / n ≥ 0 y n es par}
+```
+(incluye `n=0`: con la cinta vacía, se lee `B` de inmediato estando en `q0` ⇒ acepta.)
+
+**c)** `||||` (n=4): `q0 -1→ q1 -1→ q0 -1→ q1 -1→ q0 -B→ qf`. Se leyeron 4 marcas
+alternando y se llega al blanco en `q0` ⇒ **ACEPTA** ✓ (4 es par).
+`|||` (n=3): `q0 -1→ q1 -1→ q0 -1→ q1 -B→` (`δ(q1,B)` no definida) ⇒ la máquina
+**se detiene sin llegar a `qf`** ⇒ **RECHAZA** ✓ (3 es impar).
 
 ---
 
