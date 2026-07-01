@@ -4,7 +4,7 @@
 
 ---
 
-## Tipo A — Lenguajes y gramáticas
+## Tipo A — Lenguajes y gramáticas *(complementario, no evaluado en Prueba 3)*
 
 **A1.** `L = {aⁿb / n ≥ 0}` → `b, ab, aab, aaab, aaaab`.
 Descripción: *cero o más `a`'s seguidas de exactamente una `b`*.
@@ -61,6 +61,8 @@ C → a  | b  | c  | ε      (todas forma  A→a   o  A→ε)  ✓ regular
 seguido de un solo no terminal, o ε). Por lo tanto `G₁` **ya es una GR**: su GR
 equivalente es ella misma; no hay palabras largas que descomponer. El ejercicio
 evalúa si reconoces la forma regular y no "inventas" una transformación innecesaria.
+
+> Tipos A y B: material complementario (Módulo 1), **no evaluado en la Prueba 3**.
 
 ---
 
@@ -415,7 +417,7 @@ graph LR
 
 ---
 
-## Tipo H — Máquinas de Turing (unario)
+## Tipo H — Máquinas de Turing (1 cinta)
 
 **H1.** `f(n,m) = n + m`. Entrada `|ⁿ + |ᵐ`. Como reemplazar `+` por `|` deja
 `n + 1 + m` marcas, hay que borrar **una** marca al final:
@@ -428,21 +430,106 @@ q2: escribir B (borra la última '|') → HALT
 Resultado: un bloque contiguo de `n + m` marcas `|`.
 Ej.: `|||+||||` → `|||||||` = 7 = 3+4. ✓
 
-**H2.** `f(n,m) = n * m`. Estrategia (multicinta recomendada):
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2((q2))
+    qf((("qf (halt)")))
+    q0 -->|"1 / 1, D"| q0
+    q0 -->|"+ / 1, D"| q1
+    q1 -->|"1 / 1, D"| q1
+    q1 -->|"B / B, I"| q2
+    q2 -->|"1 / B, —"| qf
+```
 
-- Cinta 1: entrada `|ⁿ * |ᵐ`. Cinta 2 (resultado), inicialmente vacía.
-- Por **cada** una de las `m` marcas del segundo bloque, **copiar** las `n` marcas
-  del primer bloque al final de la cinta 2.
-- Se usan estados para: (1) marcar/recorrer una `|` del bloque `m`, (2) recorrer
-  las `n` marcas copiándolas, (3) volver y repetir hasta agotar el bloque `m`.
-- Al terminar, la cinta 2 contiene `n · m` marcas.
+**H2.** `f(n) = n − 1` (para `n > 0`). Basta con **borrar la última marca**:
 
-Es más engorroso con una sola cinta (hay que "tachar" marcas ya usadas con un
-símbolo auxiliar), pero equivalente en poder.
+```
+q0: avanza a la derecha sobre marcas; al leer B, retrocede una celda → q1
+q1: borra la marca (escribe B) → HALT
+```
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    qf((("qf (halt)")))
+    q0 -->|"1 / 1, D"| q0
+    q0 -->|"B / B, I"| q1
+    q1 -->|"1 / B, —"| qf
+```
+
+Ej.: `||||` (4) ⇒ `|||` (3).
+
+**H3.** Reconocedor de `L = {aⁿbⁿcⁿ / n ≥ 1}` (1 cinta). Estrategia por
+"marcado y barrido" repetido:
+
+```
+Repetir:
+  1) Buscar la primera 'a' sin marcar (por la izquierda), marcarla (X).
+  2) Avanzar hasta la primera 'b' sin marcar, marcarla (Y).
+  3) Avanzar hasta la primera 'c' sin marcar, marcarla (Z).
+  4) Volver al extremo izquierdo de la cinta.
+Hasta que ya no queden 'a' sin marcar.
+Verificar que tampoco queden 'b' ni 'c' sin marcar (mismo n) ⇒ ACEPTAR.
+Si en algún paso falta la b o la c correspondiente ⇒ RECHAZAR.
+```
+
+**¿Por qué el a.a. (Tipo G) no puede?** Una pila solo permite comparar **dos**
+cantidades a la vez (apilar con un símbolo, desapilar con otro). Para verificar
+`n_a = n_b = n_c` hace falta comparar **tres** cantidades simultáneamente, lo cual
+excede lo que una sola pila puede "recordar". La MT sí puede, porque su cinta
+permite **recorrerla de ida y vuelta** cuantas veces sea necesario, marcando el
+progreso directamente sobre la entrada.
 
 ---
 
-## Tipo I — Expresiones regulares
+## Tipo J — Máquinas de Turing (multicinta)
+
+**J1.** `f(n,m) = n * m` con **2 cintas** (cinta 1 = entrada, cinta 2 = resultado):
+
+```
+Por cada una de las m marcas del bloque derecho de la cinta 1:
+    copiar las n marcas del bloque izquierdo al final de la cinta 2
+Al terminar, la cinta 2 contiene n · m marcas.
+```
+
+Se usan estados para: (1) marcar/recorrer una `|` del bloque `m` sin repetirla,
+(2) recorrer las `n` marcas del bloque `n` copiándolas a la cinta 2, (3) volver y
+repetir hasta agotar el bloque `m`.
+
+Con **una sola cinta** también se puede, pero hay que "tachar" con un símbolo
+auxiliar las marcas ya usadas del bloque `m` para no volver a contarlas — más
+engorroso, aunque **equivalente en poder**.
+
+**J2.** `f(n,m) = máx(n, m)` con **2 cintas de entrada** (`n` marcas y `m` marcas)
+y una **tercera cinta de salida**:
+
+```
+Mientras la cinta 1 o la cinta 2 tengan una marca en la posición actual:
+  - si la cinta 1 tiene marca, avanza su cabezal
+  - si la cinta 2 tiene marca, avanza su cabezal
+  - si al menos una de las dos tenía marca, escribe una marca en la cinta 3
+    y avanza su cabezal
+Cuando ambas cintas 1 y 2 están en blanco simultáneamente, detente.
+```
+La cinta 3 queda con exactamente `máx(n, m)` marcas: en cada "ronda" avanza el
+cabezal de **cada** cinta que aún tenga marca, así que el proceso dura tantas
+rondas como el bloque **más largo**.
+
+**¿Por qué es más simple con varias cintas?** Con dos cabezales independientes se
+puede **leer ambos bloques en paralelo**, ronda a ronda, sin tener que "recordar"
+con símbolos auxiliares cuál cinta ya se agotó. Con una sola cinta habría que
+codificar los dos números intercalados o separados por un marcador y hacer varios
+recorridos de ida y vuelta para comparar — el mismo problema de fondo que resolver
+`aⁿbⁿcⁿ` (Tipo H3), pero aquí evitado gracias a tener cintas separadas.
+
+---
+
+## Tipo I — Expresiones regulares *(complementario, no evaluado en Prueba 3)*
 
 **I1.** `L((a+b)* ab)` = palabras sobre `{a,b}` **que terminan en `ab`**.
 Ejemplos: `ab, aab, bab, abab, bbab`. Comprensión: `{ω ∈ {a,b}* / ω termina en ab}`.

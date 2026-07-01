@@ -1,95 +1,101 @@
-# Prueba Sumativa — Unidad 3: Teoría de Autómatas
+# Prueba Sumativa 3 — Unidad 3: Teoría de Autómatas
 
 **Ramo:** Grafos y Lenguajes Formales · UTEM
 **Duración:** 60 minutos · **Puntaje total:** 60 puntos · **Nota 4,0 = 60% (36 pts)**
 
+> **Contenidos evaluados** (según lo informado por el profesor: todo lo visto
+> entre la 2ª prueba y el fin del semestre): **AFD, AFND, AFND-ε, Autómatas de
+> Pila, Máquinas de Turing (1 cinta) y Máquinas de Turing (multicinta)**.
+> Cada una de las 6 preguntas corresponde a uno de estos temas, en el mismo orden.
+
 **Instrucciones**
-- Responde con procedimiento completo: tablas, particiones y trazas. Una respuesta
-  sin desarrollo no recibe puntaje.
-- Notación: `M = (Q, Σ, δ, q0, F)` para AF; `M = (Q, Σ, Γ, δ, q0, Z, F)` para a.a.
+- Responde con procedimiento completo: tablas, ε-clausuras, particiones y trazas.
+  Una respuesta sin desarrollo no recibe puntaje.
+- Notación: `M = (Q, Σ, δ, q0, F)` para autómatas finitos;
+  `M = (Q, Σ, Γ, δ, q0, Z, F)` para autómatas de pila;
+  `M = (Q, Σ, Γ, δ, q0, B, F)` para máquinas de Turing.
 - Puedes usar la guía de notación, pero **no** el material de estudio.
 
 ---
 
-## Pregunta 1 — Lenguajes y gramáticas (8 pts)
+## Pregunta 1 — AFD (10 pts)
 
-a) **(4 pts)** Describe por comprensión el lenguaje generado por:
-```
-G = ({0,1}, {S,A}, {S → 0S | 1A,  A → 0A | 1A | ε}, S)
-```
+Sea `Σ = {a, b}` y `L = {ω ∈ Σ* / ω contiene la subcadena "aab"}`.
 
-b) **(4 pts)** Escribe una **gramática regular** para
-`L = {ω ∈ {a,b}* / ω termina en b}`.
-
----
-
-## Pregunta 2 — Transformación GRE → GR (10 pts)
-
-Encuentra una **gramática regular equivalente** aplicando el algoritmo visto en
-clases. Indica qué producciones ya eran regulares.
-
-```
-G = ({a,b}, {S,A,B}, {S → aaS | bA | ε,  A → abB | b,  B → ba | ε}, S)
-```
+a) **(7 pts)** Diseña un **AFD** que reconozca `L`: quíntupla, tabla de
+transición y diagrama de estados.
+b) **(3 pts)** Justifica si tu AFD es **mínimo** (sin aplicar el algoritmo
+completo, argumenta por qué los estados no podrían fusionarse).
 
 ---
 
-## Pregunta 3 — AFD vs AFND (12 pts)
+## Pregunta 2 — AFND (10 pts)
 
-Sea `Σ = {a, b}`. Para el lenguaje de las palabras que **contienen la subcadena
-`ab`**:
+Sea `Σ = {a, b}` y `L = {ω ∈ Σ* / la tercera letra contada desde el final de ω
+es 'a'}` (es decir, `|ω| ≥ 3` y el símbolo en la posición `|ω| − 2` es `a`).
 
-a) **(5 pts)** Diseña un **AFD**: quíntupla, tabla de transición y diagrama.
-b) **(5 pts)** Diseña un **AFND** (δ en conjuntos) y su diagrama.
-c) **(2 pts)** Traza en tu **AFND** las palabras `bab` (debe **aceptar**) y `ba`
-   (debe **rechazar**).
+a) **(7 pts)** Diseña **directamente** un **AFND** (δ en conjuntos) que
+reconozca `L`, aprovechando el no-determinismo para "adivinar" cuál es la
+tercera letra desde el final. Da la quíntupla y el diagrama.
+b) **(3 pts)** Traza (análisis de hilos) las palabras `aab` (debe **aceptar**)
+y `baa` (debe **rechazar**).
 
 ---
 
-## Pregunta 4 — Subconjuntos y minimización (14 pts)
+## Pregunta 3 — AFND-ε (12 pts)
 
-a) **(8 pts)** Convierte a **AFD** el siguiente **AFND** por construcción de
-subconjuntos. Marca los finales y descarta los inalcanzables.
+Sea el siguiente AFND-ε (`q0` inicial, `F = {q1, q2}`):
+
 ```
-δ(q0,a) = {q0,q1}   δ(q0,b) = {q0}
-δ(q1,a) = {q2}      δ(q1,b) = {q2}
-δ(q2,a) = ∅         δ(q2,b) = ∅        q0 inicial,  F = {q2}
+δ(q0, ε) = {q1, q2}
+δ(q1, a) = {q1}
+δ(q2, b) = {q2}
 ```
 
-b) **(6 pts)** **Minimiza** el siguiente AFD (`q0` inicial, `F = {q4}`). Muestra
-las particiones `Π₀, Π₁, …`.
-
-| δ | 0 | 1 |
-|---|---|---|
-| q0 | q1 | q2 |
-| q1 | q1 | q3 |
-| q2 | q2 | q3 |
-| q3 | q4 | q4 |
-| q4 | q4 | q4 |
+a) **(4 pts)** Calcula la **ε-clausura** de cada estado.
+b) **(8 pts)** Construye el **AFD equivalente** por construcción de
+subconjuntos (usa las ε-clausuras). Entrega la tabla completa, indica los
+estados finales y verifica con las palabras `aaa` (debe **aceptar**) y `ab`
+(debe **rechazar**).
 
 ---
 
-## Pregunta 5 — Autómata apilador (8 pts)
+## Pregunta 4 — Autómata de Pila (10 pts)
 
-Diseña un **autómata apilador** que valide `L = {aⁿb²ⁿ / n > 0}` (el doble de `b`
-que de `a`). Entrega la tabla de transición con `Γ = {X, Z}`, explica el criterio
-de aceptación y traza la palabra `abb`.
+Sea `Σ = {a, b}` y `L = {aⁿbᵐ / m ≥ n ≥ 0}` (cero o más `a` seguidas de al
+menos tantas `b` como `a` hubo).
 
----
-
-## Pregunta 6 — Expresiones regulares (4 pts)
-
-a) **(2 pts)** Describe por comprensión `L((0+1)* 00 (0+1)*)`.
-b) **(2 pts)** Escribe una RegEx sobre `{a,b}` para "palabras que contienen **al
-   menos una `a` y al menos una `b`**".
+a) **(6 pts)** Diseña un **autómata de pila** que reconozca `L`. Entrega la
+tabla de transición con `Γ = {X, Z}`.
+b) **(2 pts)** Explica el criterio de aceptación.
+c) **(2 pts)** Traza las palabras `aabbb` (debe **aceptar**, n=2, m=3) y `aab`
+(debe **rechazar**, n=2, m=1).
 
 ---
 
-## Pregunta 7 — Máquina de Turing (4 pts)
+## Pregunta 5 — Máquina de Turing, 1 cinta (10 pts)
 
-Describe (estados y movimientos) una **MT** que calcule el **sucesor**
-`f(n) = n + 1` en sistema unitario. Entrada `|ⁿ`, salida `|ⁿ⁺¹`.
-Ejemplo: `|||` (3) → `||||` (4).
+Sea `L = {aⁿbⁿcⁿ / n ≥ 1}`.
+
+a) **(6 pts)** Describe (estados y reglas de movimiento) una **MT de 1 cinta**
+que reconozca `L`, usando símbolos auxiliares para marcar el progreso.
+b) **(2 pts)** Explica por qué un **autómata de pila** (Pregunta 4) no puede
+reconocer este lenguaje.
+c) **(2 pts)** Describe brevemente qué ocurre al procesar `abc` (debe
+**aceptar**) y `aabc` (debe **rechazar**).
+
+---
+
+## Pregunta 6 — Máquina de Turing, multicinta (8 pts)
+
+Sea `f(n, m) = n · m`, calculada en sistema unitario con una **MT de 2 cintas**
+(cinta 1: entrada `|ⁿ * |ᵐ`; cinta 2: resultado, inicialmente vacía).
+
+a) **(5 pts)** Describe la estrategia: qué contiene cada cinta en cada momento
+y qué ocurre en cada "ronda" del cómputo.
+b) **(3 pts)** Explica por qué este diseño es más simple con **dos cintas**
+que con una sola (¿qué habría que "recordar" con símbolos auxiliares si solo
+hubiera una cinta?).
 
 ---
 

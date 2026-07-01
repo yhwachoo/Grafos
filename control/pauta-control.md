@@ -1,100 +1,62 @@
 # Pauta de corrección — Control Formativo
 
-Solución de referencia para cada ítem.
+Solución de referencia para cada ítem (alineados con los 6 temas de la Prueba 3:
+AFD, AFND, AFND-ε, Autómata de Pila, MT 1 cinta, MT multicinta).
 
 ---
 
-## Ítem 1 — Gramáticas
+## Ítem 1 — AFD (contiene `bab` + minimización)
 
-`G = ({a,b}, {S,A}, {S → aS | bA, A → bA | b}, S)`.
-
-a) `S → bA → bb`  ·  `S → aS → abA → abb`.
-b) Estructura: `aⁿ` (por `S→aS`), luego una `b` (por `S→bA`), luego `bᵏ` (por
-   `A→bA`) y una `b` final (`A→b`). El bloque de `b` tiene **al menos 2**:
-   ```
-   L(G) = {aⁿ bᵐ / n ≥ 0, m ≥ 2}
-   ```
-
----
-
-## Ítem 2 — GRE → GR
-
-- `S → abS` (dos terminales) → `S → aX₁`, `X₁ → bS`.
-- `S → cA`  → **ya regular**.
-- `S → ε`   → **ya regular**.
-- `A → aab` (tres terminales) → `A → aY₁`, `Y₁ → aY₂`, `Y₂ → b`.
-- `A → c`   → **ya regular**.
-
-GR equivalente:
-```
-S  → aX₁ | cA | ε
-X₁ → bS
-A  → aY₁ | c
-Y₁ → aY₂
-Y₂ → b
-```
-
----
-
-## Ítem 3 — AFD contiene `ba`
-
-`Q = {q0,q1,q2}`, `q0` inicial, `F = {q2}`.
+**AFD que contiene la subcadena `bab`.** `Q = {q0,q1,q2,q3}`, `q0` inicial,
+`F = {q3}` (absorbente):
 
 | δ | a | b |
 |---|---|---|
 | → q0 | q0 | q1 |
 | q1 | q2 | q1 |
-| * q2 | q2 | q2 |
+| q2 | q0 | q3 |
+| * q3 | q3 | q3 |
 
-q0 = sin `b` reciente; q1 = última leída `b`; q2 = ya vi `ba` (absorbe).
-Verif. `ba`: q0→q1→q2 ✓; `ab`: q0→q0→q1 ✗.
+q0 = sin progreso; q1 = vi `b`; q2 = vi `ba`; q3 = ya vi `bab` (absorbe).
+Verif. `bab`: q0→q1→q2→q3 ✓. `abab`: q0→q0→q1→q2→q3 ✓. `abba`: q0→q0→q1→q1→q0 ✗.
 
 ```mermaid
 graph LR
     ini([inicio]) --> q0
     q0((q0))
     q1((q1))
-    q2(((q2)))
+    q2((q2))
+    q3(((q3)))
     q0 -->|a| q0
     q0 -->|b| q1
     q1 -->|a| q2
     q1 -->|b| q1
-    q2 -->|a,b| q2
+    q2 -->|a| q0
+    q2 -->|b| q3
+    q3 -->|a,b| q3
 ```
+
+**Minimización del AFD dado** (`F = {q1,q2}`):
+
+`Π₀ = { q0 q3 | q1 q2 }` (no finales | finales).
+
+- Grupo `{q0,q3}`: `q0` con `a`→q1(F), `b`→q2(F); `q3` con `a,b`→q3(NF). Van a
+  grupos distintos ⇒ se separan: `{q0}`, `{q3}`.
+- Grupo `{q1,q2}`: `q1` con `a`→q1(F), `b`→q3(NF); `q2` con `a`→q3(NF), `b`→q2(F).
+  Con `a` van a grupos distintos ⇒ se separan: `{q1}`, `{q2}`.
+
+`Π₁ = { q0 | q1 | q2 | q3 }` y `Π₂ = Π₁` (estable). **El AFD ya es mínimo** (los
+4 estados son distinguibles, no se fusiona ninguno).
 
 ---
 
-## Ítem 4 — Termina en `00`
+## Ítem 2 — AFND (termina en `00`, diseño directo + subconjuntos)
 
-**(a) AFD** `F = {q2}`:
+**AFND directo** (`F = {q2}`, sin transiciones de salida desde `q2`):
 
-| δ | 0 | 1 |
-|---|---|---|
-| → q0 | q1 | q0 |
-| q1 | q2 | q0 |
-| * q2 | q2 | q0 |
-
-Diagrama AFD:
-
-```mermaid
-graph LR
-    ini([inicio]) --> q0
-    q0((q0))
-    q1((q1))
-    q2(((q2)))
-    q0 -->|0| q1
-    q0 -->|1| q0
-    q1 -->|0| q2
-    q1 -->|1| q0
-    q2 -->|0| q2
-    q2 -->|1| q0
-```
-
-**(b) AFND** `F = {q2}`:
 ```
 δ(q0,0) = {q0,q1}   δ(q0,1) = {q0}
 δ(q1,0) = {q2}      δ(q1,1) = ∅
-(q2 sin transiciones de salida)
 ```
 
 ```mermaid
@@ -109,77 +71,57 @@ graph LR
     q1 -->|0| q2
 ```
 
-**(c) Trazas:**
-`1000`: `{q0}→{q0}→{q0,q1}→{q0,q1,q2}→{q0,q1,q2}` ⇒ contiene q2 ⇒ **ACEPTA** ✓.
-`1001`: `{q0}→{q0}→{q0,q1}→{q0,q1,q2}→{q0}` (con el `1` final) ⇒ sin q2 ⇒ **RECHAZA** ✓.
+**Conversión a AFD** (subconjuntos desde `[q0]`):
 
----
-
-## Ítem 5 — Subconjuntos
-
-Desde `[q0]`:
+- `S0=[q0]`: 0→`{q0,q1}`=S1; 1→`{q0}`=S0
+- `S1=[q0,q1]`: 0→`{q0,q1}∪{q2}`=`{q0,q1,q2}`=S2; 1→`{q0}`=S0
+- `S2=[q0,q1,q2]` (final): 0→`{q0,q1,q2}`=S2 (q2 no aporta nada); 1→`{q0}`=S0
 
 | δ_D | 0 | 1 |
 |---|---|---|
-| → A = [q0] | B | A |
-| B = [q0,q1] | B | C |
-| * C = [q0,q2] | D | C |
-| * D = [q0,q1,q2] | D | C |
+| → S0=[q0] | S1 | S0 |
+| S1=[q0,q1] | S2 | S0 |
+| * S2=[q0,q1,q2] | S2 | S0 |
 
-Finales `{C, D}` (contienen q2). Todos alcanzables ⇒ no hay inalcanzables.
+Verif. `100`: S0→S0(1)→S1(0)→S2(0) ∈F ✓. `1001`: S0→S0→S1→S2→S0(1) ∉F ✓ rechaza.
 
 ```mermaid
 graph LR
-    ini([inicio]) --> A
-    A["A = [q0]"]
-    B["B = [q0,q1]"]
-    C[["C = [q0,q2]"]]
-    D[["D = [q0,q1,q2]"]]
-    A -->|0| B
-    A -->|1| A
-    B -->|0| B
-    B -->|1| C
-    C -->|0| D
-    C -->|1| C
-    D -->|0| D
-    D -->|1| C
+    ini([inicio]) --> S0
+    S0["S0 = [q0]"]
+    S1["S1 = [q0,q1]"]
+    S2[["S2 = [q0,q1,q2]"]]
+    S0 -->|0| S1
+    S0 -->|1| S0
+    S1 -->|0| S2
+    S1 -->|1| S0
+    S2 -->|0| S2
+    S2 -->|1| S0
 ```
 
 ---
 
-## Ítem 6 — Minimización
+## Ítem 3 — AFND-ε
 
-`Π₀ = { q0 q3 | q1 q2 }` (no finales | finales).
+**a) ε-clausuras:** `εcl(q0) = {q0,q1}` (q0 más lo alcanzable por ε), `εcl(q1) = {q1}`,
+`εcl(q2) = {q1,q2}` (q2 alcanza q1 por ε).
 
-- Grupo `{q0,q3}`: `q0` con `a`→q1(F) y con `b`→q2(F); `q3` con `a,b`→q3(NF).
-  Van a grupos distintos ⇒ se separan: `{q0}`, `{q3}`.
-- Grupo `{q1,q2}`: `q1` con `a`→q1(F), `b`→q3(NF); `q2` con `a`→q3(NF), `b`→q2(F).
-  Con `a` van a grupos distintos ⇒ se separan: `{q1}`, `{q2}`.
+**b) Construcción de subconjuntos** (inicial `= εcl(q0) = {q0,q1} = S0`):
 
-`Π₁ = { q0 | q1 | q2 | q3 }` y `Π₂ = Π₁`.
+- `S0 = {q0,q1}`: con `a` → mueve a `{q0}`, εcl → `{q0,q1} = S0`.
+  Con `b` → mueve a `{q2}`, εcl → `{q1,q2} = S1`.
+- `S1 = {q1,q2}` (**final**, contiene q2): con `a` → `∅`. Con `b` → `{q2}`, εcl → `S1`.
 
-**Conclusión:** el AFD **ya es mínimo** (los 4 estados son distinguibles, no se
-fusiona ninguno).
+| δ_D | a | b |
+|---|---|---|
+| → S0 = {q0,q1} | S0 | S1 |
+| * S1 = {q1,q2} | ∅ | S1 |
 
-```mermaid
-graph LR
-    ini([inicio]) --> q0
-    q0((q0))
-    q1(((q1)))
-    q2(((q2)))
-    q3((q3))
-    q0 -->|a| q1
-    q0 -->|b| q2
-    q1 -->|a| q1
-    q1 -->|b| q3
-    q2 -->|a| q3
-    q2 -->|b| q2
-    q3 -->|a,b| q3
-```
+Lenguaje resultante: `L = a* b⁺` (cualquier cantidad de `a`, luego al menos una `b`).
 
 ---
 
-## Ítem 7 — Autómata apilador `aⁿbⁿ`
+## Ítem 4 — Autómata de Pila `aⁿbⁿ`
 
 `Γ = {X, Z}`:
 
@@ -189,8 +131,8 @@ graph LR
 | **X** | q0 \ push(X) | q1 \ pop() |
 
 En `q1` cada `b` hace `pop()`. **Criterio de aceptación:** al terminar la entrada
-la pila queda vacía (solo `Z`), es decir se apiló una `X` por cada `a` y se
-desapiló una por cada `b` ⇒ igual número de `a` y `b`, con `n > 0`.
+la pila queda vacía (solo `Z`) — se apiló una `X` por cada `a` y se desapiló una
+por cada `b` ⇒ igual número de `a` y `b`, con `n > 0`.
 
 ```mermaid
 graph LR
@@ -205,9 +147,12 @@ graph LR
     q1 -->|"ε, Z / Z"| qf
 ```
 
+**Traza `aabb`** (n=2): `a`⇒`XZ`; `a`⇒`XXZ`; `b`⇒pop→`XZ`(pasa a q1); `b`⇒pop→`Z`;
+fin de entrada con pila `Z` ⇒ **ACEPTA** ✓.
+
 ---
 
-## Ítem 8 — MT `n + m`
+## Ítem 5 — MT `n + m` (1 cinta)
 
 Entrada `||+|||` (2 + 3):
 ```
@@ -218,11 +163,38 @@ q2: reemplaza la última '|' por B (borra una marca) → HALT
 Reemplazar `+` por `|` produce `n+m+1` marcas; borrar una deja `n+m`.
 Resultado: `|||||` = 5 = 2 + 3. ✓
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2((q2))
+    qf((("qf (halt)")))
+    q0 -->|"1 / 1, D"| q0
+    q0 -->|"+ / 1, D"| q1
+    q1 -->|"1 / 1, D"| q1
+    q1 -->|"B / B, I"| q2
+    q2 -->|"1 / B, —"| qf
+```
+
 ---
 
-## Ítem 9 — RegEx
+## Ítem 6 — MT multicinta: ¿`n = m`?
 
-a) `L(b(a+b)*a)` = palabras que **empiezan con `b`** y **terminan con `a`**
-   (con cualquier cosa en medio): `{ω ∈ {a,b}* / ω empieza en b y termina en a}`
-   (palabra mínima `ba`).
-b) "Al menos dos `a`": `(a + b)* a (a + b)* a (a + b)*`.
+Cinta 1 con `n` marcas, cinta 2 con `m` marcas, cabezales al inicio de cada bloque:
+
+```
+q0: mientras ambas cintas tengan marca en la posición actual,
+    avanzar los dos cabezales a la vez (permanece en q0).
+  - si una cinta tiene marca y la otra blanco (no coinciden) → RECHAZAR
+  - si ambas cintas quedan en blanco en el mismo paso → ACEPTAR
+```
+
+Es la versión multicinta del "comparar de a pares" que en una sola cinta requiere
+marcar y tachar símbolos (como en la resta acotada o en `aⁿbⁿcⁿ` del Módulo 4):
+con dos cabezales independientes se lee **en paralelo**, sin necesidad de ir y
+volver ni de símbolos auxiliares.
+
+**Trazas:** `n=2,m=2` → los cabezales avanzan 2 pasos y ambas cintas llegan a
+blanco a la vez ⇒ **ACEPTA**. `n=2,m=3` → al tercer paso la cinta 1 está en
+blanco pero la cinta 2 aún tiene marca ⇒ **RECHAZA**.

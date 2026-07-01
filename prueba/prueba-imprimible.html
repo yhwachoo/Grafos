@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Prueba Sumativa — Unidad 3: Teoría de Autómatas</title>
+<title>Prueba Sumativa 3 — Unidad 3: Teoría de Autómatas</title>
 <style>
   @page {
     size: A4;
@@ -51,10 +51,11 @@
     margin: 10px 0 14px 0;
   }
   .instrucciones ul { margin: 4px 0 0 0; padding-left: 18px; }
-  .puntaje-box {
-    font-size: 9.5pt;
-    text-align: right;
+  .alcance {
+    font-size: 9.3pt;
+    color: #444;
     margin-top: 4px;
+    font-style: italic;
   }
   table.puntaje {
     width: 100%;
@@ -119,11 +120,6 @@
   .respuesta-area.medium { height: 150px; }
   .respuesta-area.large { height: 220px; }
   .respuesta-area.xlarge { height: 300px; }
-  .grid-label {
-    font-size: 8.8pt;
-    color: #666;
-    margin: 2px 0 0 2px;
-  }
   .page-break {
     page-break-before: always;
   }
@@ -160,7 +156,7 @@
 <body>
 
 <div class="header">
-  <h1>Prueba Sumativa — Unidad 3: Teoría de Autómatas</h1>
+  <h1>Prueba Sumativa 3 — Unidad 3: Teoría de Autómatas</h1>
   <div class="subt">Grafos y Lenguajes Formales · UTEM &nbsp;|&nbsp; Duración: 60 minutos &nbsp;|&nbsp; Puntaje total: 60 puntos</div>
 </div>
 
@@ -177,165 +173,141 @@
 <div class="instrucciones">
   <strong>Instrucciones</strong>
   <ul>
-    <li>Responde con procedimiento completo: tablas, particiones y trazas. Una respuesta sin desarrollo no recibe puntaje.</li>
-    <li>Notación: <code>M = (Q, Σ, δ, q0, F)</code> para autómatas finitos; <code>M = (Q, Σ, Γ, δ, q0, Z, F)</code> para autómatas apiladores.</li>
+    <li>Responde con procedimiento completo: tablas, ε-clausuras, particiones y trazas. Una respuesta sin desarrollo no recibe puntaje.</li>
+    <li>Notación: <code>M = (Q, Σ, δ, q0, F)</code> para autómatas finitos; <code>M = (Q, Σ, Γ, δ, q0, Z, F)</code> para autómatas de pila; <code>M = (Q, Σ, Γ, δ, q0, B, F)</code> para máquinas de Turing.</li>
     <li>Puedes usar la guía de notación, pero <strong>no</strong> el material de estudio.</li>
   </ul>
+  <div class="alcance">Contenidos evaluados: AFD · AFND · AFND-ε · Autómatas de Pila · Máquinas de Turing (1 cinta) · Máquinas de Turing (multicinta).</div>
 </div>
 
 <table class="puntaje">
   <tr>
-    <th>Pregunta</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>Total</th>
+    <th>Pregunta</th><th>1 — AFD</th><th>2 — AFND</th><th>3 — AFND-ε</th><th>4 — Pila</th><th>5 — MT 1 cinta</th><th>6 — MT multicinta</th><th>Total</th>
   </tr>
   <tr>
-    <td>Puntaje máx.</td><td>8</td><td>10</td><td>12</td><td>14</td><td>8</td><td>4</td><td>4</td><td>60</td>
+    <td>Puntaje máx.</td><td>10</td><td>10</td><td>12</td><td>10</td><td>10</td><td>8</td><td>60</td>
   </tr>
   <tr>
-    <td>Obtenido</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    <td>Obtenido</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
   </tr>
 </table>
 
-<!-- ============ PREGUNTA 1 ============ -->
+<!-- ============ PREGUNTA 1 — AFD ============ -->
 <div class="pregunta">
   <div class="pregunta-header">
-    <h2>Pregunta 1 — Lenguajes y gramáticas</h2>
-    <span class="pts">(8 pts)</span>
-  </div>
-  <div class="enunciado">
-    <div class="sub">
-      <strong>a) (4 pts)</strong> Describe por comprensión el lenguaje generado por:<br>
-      <code>G = ({0,1}, {S,A}, {S → 0S | 1A,  A → 0A | 1A | ε}, S)</code>
-    </div>
-    <div class="respuesta-area medium"></div>
-
-    <div class="sub" style="margin-top:10px;">
-      <strong>b) (4 pts)</strong> Escribe una <strong>gramática regular</strong> para
-      <code>L = {ω ∈ {a,b}* / ω termina en b}</code>.
-    </div>
-    <div class="respuesta-area medium"></div>
-  </div>
-</div>
-
-<!-- ============ PREGUNTA 2 ============ -->
-<div class="pregunta">
-  <div class="pregunta-header">
-    <h2>Pregunta 2 — Transformación GRE → GR</h2>
+    <h2>Pregunta 1 — AFD</h2>
     <span class="pts">(10 pts)</span>
   </div>
   <div class="enunciado">
-    Encuentra una <strong>gramática regular equivalente</strong> aplicando el algoritmo visto en clases.
-    Indica qué producciones ya eran regulares.
-    <br><br>
-    <code>G = ({a,b}, {S,A,B}, {S → aaS | bA | ε,&nbsp; A → abB | b,&nbsp; B → ba | ε}, S)</code>
+    Sea <code>Σ = {a, b}</code> y <code>L = {ω ∈ Σ* / ω contiene la subcadena "aab"}</code>.
+
+    <div class="sub"><strong>a) (7 pts)</strong> Diseña un <strong>AFD</strong> que reconozca <code>L</code>: quíntupla, tabla de transición y diagrama de estados.</div>
+    <div class="respuesta-area medium"></div>
+    <div class="diagrama-espacio"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (3 pts)</strong> Justifica si tu AFD es <strong>mínimo</strong> (sin aplicar el algoritmo completo, argumenta por qué los estados no podrían fusionarse).</div>
+    <div class="respuesta-area small"></div>
   </div>
-  <div class="respuesta-area large"></div>
 </div>
 
-<!-- ============ PREGUNTA 3 (page break) ============ -->
+<!-- ============ PREGUNTA 2 — AFND (page break) ============ -->
 <div class="pregunta page-break">
   <div class="pregunta-header">
-    <h2>Pregunta 3 — AFD vs AFND</h2>
+    <h2>Pregunta 2 — AFND</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>Σ = {a, b}</code> y <code>L = {ω ∈ Σ* / la tercera letra contada desde el final de ω es 'a'}</code>
+    (es decir, <code>|ω| ≥ 3</code> y el símbolo en la posición <code>|ω| − 2</code> es <code>a</code>).
+
+    <div class="sub"><strong>a) (7 pts)</strong> Diseña <strong>directamente</strong> un <strong>AFND</strong> (δ en conjuntos) que reconozca <code>L</code>, aprovechando el no-determinismo para "adivinar" cuál es la tercera letra desde el final. Da la quíntupla y el diagrama.</div>
+    <div class="respuesta-area medium"></div>
+    <div class="diagrama-espacio"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (3 pts)</strong> Traza (análisis de hilos) las palabras <code>aab</code> (debe <strong>aceptar</strong>) y <code>baa</code> (debe <strong>rechazar</strong>).</div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 3 — AFND-ε (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 3 — AFND-ε</h2>
     <span class="pts">(12 pts)</span>
   </div>
   <div class="enunciado">
-    Sea <code>Σ = {a, b}</code>. Para el lenguaje de las palabras que <strong>contienen la subcadena
-    <code>ab</code></strong>:
+    Sea el siguiente AFND-ε (<code>q0</code> inicial, <code>F = {q1, q2}</code>):<br>
+    <code>δ(q0, ε) = {q1, q2}</code>&nbsp;&nbsp; <code>δ(q1, a) = {q1}</code>&nbsp;&nbsp; <code>δ(q2, b) = {q2}</code>
 
-    <div class="sub"><strong>a) (5 pts)</strong> Diseña un <strong>AFD</strong>: quíntupla, tabla de transición y diagrama.</div>
-    <div class="respuesta-area medium"></div>
-    <div class="diagrama-espacio"></div>
-
-    <div class="sub" style="margin-top:10px;"><strong>b) (5 pts)</strong> Diseña un <strong>AFND</strong> (δ en conjuntos) y su diagrama.</div>
-    <div class="respuesta-area medium"></div>
-    <div class="diagrama-espacio"></div>
+    <div class="sub"><strong>a) (4 pts)</strong> Calcula la <strong>ε-clausura</strong> de cada estado.</div>
+    <div class="respuesta-area small"></div>
 
     <div class="sub" style="margin-top:10px;">
-      <strong>c) (2 pts)</strong> Traza en tu <strong>AFND</strong> las palabras <code>bab</code>
-      (debe <strong>aceptar</strong>) y <code>ba</code> (debe <strong>rechazar</strong>).
+      <strong>b) (8 pts)</strong> Construye el <strong>AFD equivalente</strong> por construcción de subconjuntos (usa las ε-clausuras).
+      Entrega la tabla completa, indica los estados finales y verifica con las palabras <code>aaa</code> (debe <strong>aceptar</strong>) y <code>ab</code> (debe <strong>rechazar</strong>).
     </div>
+    <div class="respuesta-area large"></div>
+    <div class="diagrama-espacio"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 4 — Autómata de Pila (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 4 — Autómata de Pila</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>Σ = {a, b}</code> y <code>L = {aⁿbᵐ / m ≥ n ≥ 0}</code>
+    (cero o más <code>a</code> seguidas de al menos tantas <code>b</code> como <code>a</code> hubo).
+
+    <div class="sub"><strong>a) (6 pts)</strong> Diseña un <strong>autómata de pila</strong> que reconozca <code>L</code>. Entrega la tabla de transición con <code>Γ = {X, Z}</code>.</div>
+    <div class="respuesta-area medium"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (2 pts)</strong> Explica el criterio de aceptación.</div>
+    <div class="respuesta-area small"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>c) (2 pts)</strong> Traza las palabras <code>aabbb</code> (debe <strong>aceptar</strong>, n=2, m=3) y <code>aab</code> (debe <strong>rechazar</strong>, n=2, m=1).</div>
     <div class="respuesta-area small"></div>
   </div>
 </div>
 
-<!-- ============ PREGUNTA 4 (page break) ============ -->
+<!-- ============ PREGUNTA 5 — MT 1 cinta (page break) ============ -->
 <div class="pregunta page-break">
   <div class="pregunta-header">
-    <h2>Pregunta 4 — Subconjuntos y minimización</h2>
-    <span class="pts">(14 pts)</span>
+    <h2>Pregunta 5 — Máquina de Turing (1 cinta)</h2>
+    <span class="pts">(10 pts)</span>
   </div>
   <div class="enunciado">
-    <div class="sub">
-      <strong>a) (8 pts)</strong> Convierte a <strong>AFD</strong> el siguiente <strong>AFND</strong> por
-      construcción de subconjuntos. Marca los finales y descarta los inalcanzables.
-      <br>
-      <code>δ(q0,a) = {q0,q1}&nbsp;&nbsp; δ(q0,b) = {q0}</code><br>
-      <code>δ(q1,a) = {q2}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; δ(q1,b) = {q2}</code><br>
-      <code>δ(q2,a) = ∅&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; δ(q2,b) = ∅</code>&nbsp;&nbsp;&nbsp;&nbsp;
-      q0 inicial,&nbsp; F = {q2}
-    </div>
+    Sea <code>L = {aⁿbⁿcⁿ / n ≥ 1}</code>.
+
+    <div class="sub"><strong>a) (6 pts)</strong> Describe (estados y reglas de movimiento) una <strong>MT de 1 cinta</strong> que reconozca <code>L</code>, usando símbolos auxiliares para marcar el progreso.</div>
     <div class="respuesta-area large"></div>
 
-    <div class="sub" style="margin-top:10px;">
-      <strong>b) (6 pts)</strong> <strong>Minimiza</strong> el siguiente AFD (q0 inicial, F = {q4}).
-      Muestra las particiones Π₀, Π₁, …
-    </div>
-    <table class="puntaje" style="width:60%; margin-bottom:6px;">
-      <tr><th>δ</th><th>0</th><th>1</th></tr>
-      <tr><td>q0</td><td>q1</td><td>q2</td></tr>
-      <tr><td>q1</td><td>q1</td><td>q3</td></tr>
-      <tr><td>q2</td><td>q2</td><td>q3</td></tr>
-      <tr><td>q3</td><td>q4</td><td>q4</td></tr>
-      <tr><td>q4</td><td>q4</td><td>q4</td></tr>
-    </table>
-    <div class="respuesta-area large"></div>
+    <div class="sub" style="margin-top:10px;"><strong>b) (2 pts)</strong> Explica por qué un <strong>autómata de pila</strong> (Pregunta 4) no puede reconocer este lenguaje.</div>
+    <div class="respuesta-area small"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>c) (2 pts)</strong> Describe brevemente qué ocurre al procesar <code>abc</code> (debe <strong>aceptar</strong>) y <code>aabc</code> (debe <strong>rechazar</strong>).</div>
+    <div class="respuesta-area small"></div>
   </div>
 </div>
 
-<!-- ============ PREGUNTA 5 (page break) ============ -->
+<!-- ============ PREGUNTA 6 — MT multicinta ============ -->
 <div class="pregunta page-break">
   <div class="pregunta-header">
-    <h2>Pregunta 5 — Autómata apilador</h2>
+    <h2>Pregunta 6 — Máquina de Turing (multicinta)</h2>
     <span class="pts">(8 pts)</span>
   </div>
   <div class="enunciado">
-    Diseña un <strong>autómata apilador</strong> que valide <code>L = {aⁿb²ⁿ / n > 0}</code>
-    (el doble de b que de a). Entrega la tabla de transición con <code>Γ = {X, Z}</code>,
-    explica el criterio de aceptación y traza la palabra <code>abb</code>.
-  </div>
-  <div class="respuesta-area large"></div>
-  <div class="diagrama-espacio"></div>
-</div>
+    Sea <code>f(n, m) = n · m</code>, calculada en sistema unitario con una <strong>MT de 2 cintas</strong>
+    (cinta 1: entrada <code>|ⁿ * |ᵐ</code>; cinta 2: resultado, inicialmente vacía).
 
-<!-- ============ PREGUNTA 6 ============ -->
-<div class="pregunta">
-  <div class="pregunta-header">
-    <h2>Pregunta 6 — Expresiones regulares</h2>
-    <span class="pts">(4 pts)</span>
-  </div>
-  <div class="enunciado">
-    <div class="sub"><strong>a) (2 pts)</strong> Describe por comprensión <code>L((0+1)* 00 (0+1)*)</code>.</div>
-    <div class="respuesta-area small"></div>
+    <div class="sub"><strong>a) (5 pts)</strong> Describe la estrategia: qué contiene cada cinta en cada momento y qué ocurre en cada "ronda" del cómputo.</div>
+    <div class="respuesta-area medium"></div>
 
-    <div class="sub" style="margin-top:10px;">
-      <strong>b) (2 pts)</strong> Escribe una RegEx sobre <code>{a,b}</code> para "palabras que contienen
-      <strong>al menos una a y al menos una b</strong>".
-    </div>
-    <div class="respuesta-area small"></div>
+    <div class="sub" style="margin-top:10px;"><strong>b) (3 pts)</strong> Explica por qué este diseño es más simple con <strong>dos cintas</strong> que con una sola (¿qué habría que "recordar" con símbolos auxiliares si solo hubiera una cinta?).</div>
+    <div class="respuesta-area medium"></div>
   </div>
-</div>
-
-<!-- ============ PREGUNTA 7 ============ -->
-<div class="pregunta">
-  <div class="pregunta-header">
-    <h2>Pregunta 7 — Máquina de Turing</h2>
-    <span class="pts">(4 pts)</span>
-  </div>
-  <div class="enunciado">
-    Describe (estados y movimientos) una <strong>MT</strong> que calcule el <strong>sucesor</strong>
-    <code>f(n) = n + 1</code> en sistema unitario. Entrada <code>|ⁿ</code>, salida <code>|ⁿ⁺¹</code>.
-    Ejemplo: <code>|||</code> (3) → <code>||||</code> (4).
-  </div>
-  <div class="respuesta-area medium"></div>
 </div>
 
 <div class="footer-note">

@@ -1,12 +1,19 @@
 # Ejercicios por tipo — Teoría de Autómatas
 
-Ejercicios agrupados por **tipo de habilidad**. Cada tipo corresponde a una
-pregunta de la evaluación. Intenta resolverlos sin mirar
+Ejercicios agrupados por **tipo de habilidad**. Intenta resolverlos sin mirar
 `soluciones-ejercicios.md`. Dificultad: 🟢 básico · 🟡 intermedio · 🔴 avanzado.
+
+> **Alcance de la Prueba 3.** Según lo informado por el profesor, la 3ª prueba
+> cubre **todo lo visto entre la 2ª prueba y el fin del semestre**: **AFD, AFND,
+> AFND-ε, Autómatas de Pila, Máquinas de Turing (1 cinta) y Máquinas de Turing
+> (multicinta)** — es decir, los **Tipos C a J** de este documento.
+> Los **Tipos A, B e I** (gramáticas, GRE→GR y expresiones regulares — Módulos 1
+> y 5) son **material complementario** y **no entran en la Prueba 3**; consérvalos
+> solo como cultura general de la unidad.
 
 ---
 
-## Tipo A — Lenguajes y gramáticas
+## Tipo A — Lenguajes y gramáticas *(complementario, no evaluado en Prueba 3)*
 
 **A1 🟢** Dado `Σ = {a, b}`, lista 5 palabras de
 `L = {ω / ω = aⁿb, n ≥ 0}` y descríbelo en palabras.
@@ -22,7 +29,7 @@ pregunta de la evaluación. Intenta resolverlos sin mirar
 
 ---
 
-## Tipo B — Transformación GRE → GR (algoritmo de clase)
+## Tipo B — Transformación GRE → GR (algoritmo de clase) *(complementario)*
 
 **B1 🟡** Transforma a GR equivalente:
 `A → abA | ba | ε`.
@@ -122,17 +129,33 @@ Muestra las particiones `Π₀, Π₁, …` hasta estabilizar.
 
 ---
 
-## Tipo H — Máquinas de Turing (sistema unitario)
+## Tipo H — Máquinas de Turing (1 cinta)
 
-**H1 🔴** Diseña una MT que calcule `f(n, m) = n + m` en sistema unitario.
+**H1 🔴** Diseña una MT (1 cinta) que calcule `f(n, m) = n + m` en sistema unitario.
 Entrada `3 + 4`: `…BBB|||+||||BBB…`. Describe estados y movimientos.
 
-**H2 🔴** Esboza la estrategia de una MT que calcule `f(n, m) = n * m`.
-Entrada `4 * 3`: `…BBB||||*|||BBB…`. Puedes usar varias cintas.
+**H2 🟡** Diseña una MT (1 cinta) que calcule el **predecesor** `f(n) = n − 1`
+(para `n > 0`) en sistema unitario. Entrada `||||` (4) → salida `|||` (3).
+
+**H3 🔴** Describe (a nivel de estados y reglas) una MT (1 cinta) **reconocedora**
+de `L = {aⁿbⁿcⁿ / n ≥ 1}`. Explica por qué un autómata de pila (Tipo G) **no**
+puede reconocer este lenguaje.
 
 ---
 
-## Tipo I — Expresiones regulares
+## Tipo J — Máquinas de Turing (multicinta)
+
+**J1 🔴** Describe la estrategia de una MT **multicinta** (2 cintas) que calcule
+`f(n, m) = n · m` en sistema unitario. Entrada `4 * 3`: `…BBB||||*|||BBB…`.
+Indica qué contiene cada cinta y qué hace cada "ronda".
+
+**J2 🟡** Describe una MT **multicinta** (2 cintas) que calcule
+`f(n, m) = máx(n, m)` en sistema unitario, escribiendo el resultado en una
+tercera cinta. ¿Por qué es más simple con varias cintas que con una sola?
+
+---
+
+## Tipo I — Expresiones regulares *(complementario, no evaluado en Prueba 3)*
 
 **I1 🟢** Da 5 palabras y describe por comprensión `L((a + b)* ab)`.
 

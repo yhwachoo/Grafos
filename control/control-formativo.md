@@ -2,70 +2,28 @@
 
 **Ramo:** Grafos y Lenguajes Formales · **Unidad 3** · UTEM
 **Carácter:** formativo (sin nota) · **Duración sugerida:** 45 min
-**Objetivo:** autoevaluar el dominio de **cada tipo de ejercicio** de la unidad.
+**Objetivo:** autoevaluar el dominio de los temas que entran en la **Prueba 3**.
+
+> **Alcance oficial (según lo informado por el profesor):** la Prueba 3 cubre
+> **todo lo visto entre la 2ª prueba y el fin del semestre**: **AFD, AFND,
+> AFND-ε, Autómatas de Pila, Máquinas de Turing (1 cinta) y Máquinas de Turing
+> (multicinta)**. Este control tiene exactamente **un ítem por tema**, en el
+> mismo orden, como "ensayo" de la prueba real. Gramáticas y expresiones
+> regulares (Módulos 1 y 5) **no** entran.
 
 > Instrucciones: resuelve cada ítem registrando **todo** el procedimiento
-> (tablas, particiones, trazas). Corrige con `pauta-control.md`. Cada ítem apunta a
-> un **tipo** distinto: si fallas uno, repasa el módulo indicado.
+> (tablas, ε-clausuras, trazas). Corrige con `pauta-control.md`.
 
 ---
 
-## Ítem 1 — Gramáticas (Módulo 1) · Tipo A
-
-Dada `G = ({a,b}, {S,A}, {S → aS | bA, A → bA | b}, S)`:
-
-a) Deriva dos palabras del lenguaje.
-b) Describe `L(G)` por comprensión.
-
----
-
-## Ítem 2 — Transformación GRE → GR (Módulo 1) · Tipo B
-
-Encuentra una **GR equivalente** aplicando el algoritmo visto en clases. Indica
-qué producciones ya eran regulares y cuáles debiste descomponer.
-
-```
-G = ({a,b,c}, {S,A}, {S → abS | cA | ε, A → aab | c}, S)
-```
-
----
-
-## Ítem 3 — Diseño de AFD (Módulo 2) · Tipo C
+## Ítem 1 — AFD
 
 Diseña un **AFD** sobre `Σ = {a, b}` que acepte las palabras que **contienen la
-subcadena `ba`**. Entrega quíntupla `(Q, Σ, δ, q0, F)`, tabla de transición y
+subcadena `bab`**. Entrega quíntupla `(Q, Σ, δ, q0, F)`, tabla de transición y
 diagrama de estados.
 
----
-
-## Ítem 4 — AFD vs AFND (Módulo 2) · Tipo D
-
-Para `Σ = {0, 1}`, resuelve **de dos formas** el reconocimiento de las palabras
-que **terminan en `00`**:
-
-a) Como **AFD** (tabla + diagrama).
-b) Como **AFND** (δ en conjuntos + diagrama).
-c) Traza `1000` en tu AFND (debe **aceptar**) y `1001` (debe **rechazar**).
-
----
-
-## Ítem 5 — Conversión a AFD (Módulo 2) · Tipo E
-
-Convierte a **AFD** el siguiente **AFND** por construcción de subconjuntos.
-Entrega la tabla, marca los finales con `*` y tacha los inalcanzables si los hay.
-
-```
-δ(q0,0) = {q0,q1}   δ(q0,1) = {q0}
-δ(q1,0) = ∅         δ(q1,1) = {q2}
-δ(q2,0) = {q2}      δ(q2,1) = {q2}      q0 inicial,  F = {q2}
-```
-
----
-
-## Ítem 6 — Minimización de AFD (Módulo 2) · Tipo F
-
-Minimiza el AFD (`q0` inicial, `F = {q1, q2}`). Muestra las particiones
-`Π₀, Π₁, …` hasta estabilizar.
+Luego, **minimiza** el siguiente AFD (`q0` inicial, `F = {q1, q2}`). Muestra las
+particiones `Π₀, Π₁, …` hasta estabilizar.
 
 | δ | a | b |
 |---|---|---|
@@ -76,40 +34,67 @@ Minimiza el AFD (`q0` inicial, `F = {q1, q2}`). Muestra las particiones
 
 ---
 
-## Ítem 7 — Autómata apilador (Módulo 3) · Tipo G
+## Ítem 2 — AFND
 
-Diseña un **autómata apilador** que valide `L = {aⁿbⁿ / n > 0}`. Entrega la tabla
-de transición con `Γ = {X, Z}` y explica el criterio de aceptación.
+Para `Σ = {0, 1}`, diseña **directamente** un **AFND** (δ en conjuntos) que
+acepte las palabras que **terminan en `00`**. Da la quíntupla y el diagrama.
 
----
-
-## Ítem 8 — Máquina de Turing (Módulo 4) · Tipo H
-
-Describe (estados y movimientos) una **MT** que calcule `f(n, m) = n + m` en
-sistema unitario. Entrada de ejemplo: `||+|||` (2 + 3).
+Luego, **convierte ese mismo AFND a AFD** por construcción de subconjuntos.
+Entrega la tabla, marca los finales, y verifica con `100` (debe **aceptar**) y
+`1001` (debe **rechazar**).
 
 ---
 
-## Ítem 9 — Expresiones regulares (Módulo 5) · Tipo I
+## Ítem 3 — AFND-ε
 
-a) Describe por comprensión `L(b(a + b)* a)`.
-b) Escribe una RegEx para "palabras sobre `{a,b}` con **al menos dos `a`**".
+Dado el siguiente AFND-ε (`q0` inicial, `F = {q2}`):
+
+```
+δ(q0, ε) = {q1}    δ(q0, a) = {q0}
+δ(q1, b) = {q2}    δ(q2, ε) = {q1}
+```
+
+a) Calcula la **ε-clausura** de cada estado.
+b) Construye el **AFD equivalente** por construcción de subconjuntos (usando las
+ε-clausuras). Entrega la tabla completa e indica los estados finales.
+
+---
+
+## Ítem 4 — Autómata de Pila
+
+Diseña un **autómata de pila** que valide `L = {aⁿbⁿ / n > 0}`. Entrega la tabla
+de transición con `Γ = {X, Z}`, explica el criterio de aceptación, y traza la
+palabra `aabb`.
+
+---
+
+## Ítem 5 — Máquina de Turing (1 cinta)
+
+Describe (estados y movimientos) una **MT de 1 cinta** que calcule
+`f(n, m) = n + m` en sistema unitario. Entrada de ejemplo: `||+|||` (2 + 3).
+
+---
+
+## Ítem 6 — Máquina de Turing (multicinta)
+
+Describe una **MT con 2 cintas** que **decida si `n = m`**: la cinta 1 trae `n`
+marcas y la cinta 2 trae `m` marcas (ambas separadas del resto por blancos).
+Explica qué hacen los dos cabezales en cada paso y cuál es el criterio de
+aceptación.
 
 ---
 
 ### Autodiagnóstico
 
-| Ítem | Tipo | Módulo | ¿Correcto? |
-|---|---|---|---|
-| 1 | A — gramáticas | 1 | ☐ |
-| 2 | B — GRE→GR | 1 | ☐ |
-| 3 | C — diseño AFD | 2 | ☐ |
-| 4 | D — AFD vs AFND | 2 | ☐ |
-| 5 | E — subconjuntos | 2 | ☐ |
-| 6 | F — minimización | 2 | ☐ |
-| 7 | G — apilador | 3 | ☐ |
-| 8 | H — Turing | 4 | ☐ |
-| 9 | I — RegEx | 5 | ☐ |
+| Ítem | Tema | ¿Correcto? |
+|---|---|---|
+| 1 | AFD (diseño + minimización) | ☐ |
+| 2 | AFND (diseño directo + subconjuntos) | ☐ |
+| 3 | AFND-ε (ε-clausura + subconjuntos) | ☐ |
+| 4 | Autómata de Pila | ☐ |
+| 5 | Máquina de Turing (1 cinta) | ☐ |
+| 6 | Máquina de Turing (multicinta) | ☐ |
 
-Si fallaste **2 o más ítems de un mismo módulo**, vuelve a ese módulo antes de la
-prueba sumativa.
+Si fallaste **2 o más ítems**, vuelve al módulo correspondiente
+(`material-estudio/02` para AFD/AFND/AFND-ε, `03` para autómatas de pila,
+`04` para máquinas de Turing) antes de la prueba sumativa.

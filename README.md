@@ -4,15 +4,25 @@ Material de estudio, ejercitación y evaluación para la **Unidad 3** del ramo
 *Grafos y Lenguajes Formales* (UTEM). El contenido está construido a partir de
 las clases U3C1–U3C4, el apunte de Autómatas Finitos y el ejercicio AFD vs AFND.
 
+## Alcance de la Prueba 3
+
+Según lo informado por el profesor, la 3ª prueba cubre **todo lo visto entre la
+2ª prueba y el fin del semestre**: **AFD, AFND, AFND-ε, Autómatas de Pila,
+Máquinas de Turing (1 cinta) y Máquinas de Turing (multicinta)**. La `prueba/`,
+el `control/` y los ejercicios Tipo C–J están alineados exactamente con estos 6
+temas. Los Módulos 1 (gramáticas) y 5 (expresiones regulares) del material de
+estudio, y los ejercicios Tipo A, B e I, son **complementarios y no entran en
+la Prueba 3**, pero se conservan como contenido de la unidad.
+
 ## Contenidos de la unidad
 
-1. Lenguajes formales y gramáticas (alfabetos, palabras, lenguajes, gramáticas
-   regulares y regulares extendidas).
-2. Autómatas finitos: AFD, AFND y AFND-ε, tablas de transición, equivalencia y
-   minimización; autómatas modelo y traductores.
-3. Gramáticas libres de contexto y autómatas apiladores.
-4. Máquinas de Turing.
-5. Expresiones regulares y su relación con los AFND-ε.
+1. *(complementario)* Lenguajes formales y gramáticas (alfabetos, palabras,
+   lenguajes, gramáticas regulares y regulares extendidas).
+2. **AFD, AFND y AFND-ε** — tablas de transición, equivalencia (construcción de
+   subconjuntos, ε-clausura) y minimización; autómatas modelo y traductores.
+3. **Gramáticas libres de contexto y Autómatas de Pila.**
+4. **Máquinas de Turing** — 1 cinta y multicinta.
+5. *(complementario)* Expresiones regulares y su relación con los AFND-ε.
 
 ## Estructura del repositorio
 
@@ -25,13 +35,13 @@ material-estudio/
   04-maquinas-de-turing.md
   05-expresiones-regulares.md
 ejercicios/
-  ejercicios.md              Ejercicios por tipo, con pistas
+  ejercicios.md              Ejercicios por tipo (Tipos C-J = alcance Prueba 3)
   soluciones-ejercicios.md   Soluciones desarrolladas
 control/
-  control-formativo.md       Control por tipo de ejercicio (sin nota)
+  control-formativo.md       Control con 6 ítems, uno por tema de la Prueba 3
   pauta-control.md           Pauta de corrección
 prueba/
-  prueba.md                  Prueba sumativa (60 min, 60 pts)
+  prueba.md                  Prueba sumativa 3 (60 min, 60 pts, 6 preguntas)
   solucionario.md            Solucionario completo con puntajes
   prueba-imprimible.html     Versión para imprimir y resolver a mano
   prueba-imprimible.pdf      Misma versión, ya en PDF (A4, lista para imprimir)

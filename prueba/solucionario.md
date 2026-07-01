@@ -1,277 +1,274 @@
-# Solucionario — Prueba Sumativa Unidad 3
+# Solucionario — Prueba Sumativa 3
 
-Puntaje total: **60 pts**. Cada pregunta incluye la asignación de puntaje.
-
----
-
-## Pregunta 1 (8 pts)
-
-**a) (4 pts)** `G = ({0,1},{S,A},{S→0S|1A, A→0A|1A|ε}, S)`.
-
-`S→0S` produce cero o más `0`; luego `S→1A` obliga a colocar **un `1`**; desde `A`
-se genera cualquier cosa (`A→0A|1A|ε`). Por lo tanto toda palabra tiene **al menos
-un `1`**:
-```
-L(G) = {ω ∈ {0,1}* / ω contiene al menos un 1}
-```
-Equivalente a `0*1(0+1)*`. *(2 pts derivación/estructura, 2 pts descripción.)*
-
-**b) (4 pts)** GR para palabras que terminan en `b`:
-```
-S → aS | bS | b
-```
-`S→aS|bS` genera cualquier prefijo; `S→b` cierra con una `b` final.
-*(Aceptar variantes correctas, p. ej. `S→aS|bA, A→aS|bA|... ` que garanticen b final.)*
+Puntaje total: **60 pts**. Contenidos: AFD, AFND, AFND-ε, Autómata de Pila,
+MT (1 cinta), MT (multicinta) — un tema por pregunta, en orden.
 
 ---
 
-## Pregunta 2 (10 pts)
+## Pregunta 1 — AFD (10 pts)
 
-Descomposición de las producciones no regulares:
-
-| Producción | ¿Regular? | Reemplazo |
-|---|---|---|
-| `S → aaS` | no (dos term.) | `S → aX₁`, `X₁ → aS` |
-| `S → bA` | **sí** | — |
-| `S → ε` | **sí** | — |
-| `A → abB` | no (dos term.) | `A → aY₁`, `Y₁ → bB` |
-| `A → b` | **sí** | — |
-| `B → ba` | no (dos term.) | `B → bZ₁`, `Z₁ → a` |
-| `B → ε` | **sí** | — |
-
-**GR equivalente:**
-```
-S  → aX₁ | bA | ε
-X₁ → aS
-A  → aY₁ | b
-Y₁ → bB
-B  → bZ₁ | ε
-Z₁ → a
-```
-*(2 pts por identificar las regulares; 8 pts por descomponer correctamente cada
-una de las tres producciones largas.)*
-
----
-
-## Pregunta 3 (12 pts)
-
-**a) (5 pts) AFD — contiene `ab`.** `Q={q0,q1,q2}`, `q0` inicial, `F={q2}`:
+**a) (7 pts)** `L = {ω ∈ {a,b}* / ω contiene "aab"}`. `Q = {q0,q1,q2,q3}`, `q0`
+inicial, `F = {q3}` (absorbente):
 
 | δ | a | b |
 |---|---|---|
 | → q0 | q1 | q0 |
-| q1 | q1 | q2 |
-| * q2 | q2 | q2 |
+| q1 | q2 | q0 |
+| q2 | q2 | q3 |
+| * q3 | q3 | q3 |
 
-q0 = sin `a` pendiente; q1 = última `a` (esperando `b`); q2 = ya vi `ab` (absorbe).
+q0 = sin progreso hacia "aab"; q1 = vi `a`; q2 = vi `aa`; q3 = ya vi `aab`.
 
 ```mermaid
 graph LR
     ini([inicio]) --> q0
     q0((q0))
     q1((q1))
-    q2(((q2)))
+    q2((q2))
+    q3(((q3)))
     q0 -->|a| q1
     q0 -->|b| q0
-    q1 -->|a| q1
-    q1 -->|b| q2
-    q2 -->|a,b| q2
+    q1 -->|a| q2
+    q1 -->|b| q0
+    q2 -->|a| q2
+    q2 -->|b| q3
+    q3 -->|a,b| q3
 ```
 
-**b) (5 pts) AFND — contiene `ab`.** `F={q2}`:
-```
-δ(q0,a) = {q0,q1}   δ(q0,b) = {q0}
-δ(q1,b) = {q2}      δ(q1,a) = ∅
-δ(q2,a) = {q2}      δ(q2,b) = {q2}
-```
+Verif. `aab`: q0→q1→q2→q3 ✓. `ab`: q0→q1→q0 ✗ (no contiene "aab"). `aaab`:
+q0→q1→q2→q2→q3 ✓.
 
-| δ | a | b |
-|---|---|---|
-| → q0 | {q0,q1} | {q0} |
-| q1 | ∅ | {q2} |
-| * q2 | {q2} | {q2} |
+**b) (3 pts)** El AFD **ya es mínimo**: cada estado exige un "resto" distinto
+para llegar a `q3` — `q0` necesita ver `aab` completo, `q1` necesita `ab`, `q2`
+necesita solo `b`, y `q3` ya está aceptando (necesita `ε`). Como los cuatro
+"restos mínimos" son distintos, ningún par de estados es equivalente ⇒ no hay
+fusión posible.
+
+---
+
+## Pregunta 2 — AFND (10 pts)
+
+**a) (7 pts)** `L = {ω / la 3ª letra desde el final es 'a'}`. Diseño directo
+aprovechando el no-determinismo: en `q0` el autómata "sigue esperando" (bucle) o
+**adivina** que el símbolo actual es la tercera desde el final. `Q =
+{q0,q1,q2,q3}`, `q0` inicial, `F = {q3}`:
+
+```
+δ(q0,a) = {q0,q1}    δ(q0,b) = {q0}
+δ(q1,a) = {q2}       δ(q1,b) = {q2}
+δ(q2,a) = {q3}       δ(q2,b) = {q3}
+```
 
 ```mermaid
 graph LR
     ini([inicio]) --> q0
     q0((q0))
     q1((q1))
-    q2(((q2)))
+    q2((q2))
+    q3(((q3)))
     q0 -->|a| q0
     q0 -->|a| q1
     q0 -->|b| q0
-    q1 -->|b| q2
-    q2 -->|a,b| q2
+    q1 -->|a,b| q2
+    q2 -->|a,b| q3
 ```
 
-**c) (2 pts) Trazas (AFND):**
-`bab`: `{q0}→b→{q0}→a→{q0,q1}→b→{q0,q2}` ⇒ contiene q2 ⇒ **ACEPTA** ✓.
-`ba`:  `{q0}→b→{q0}→a→{q0,q1}` ⇒ sin q2 ⇒ **RECHAZA** ✓.
+**b) (3 pts) Trazas (análisis de hilos):**
+
+`aab` (tercera desde el final = 1ª letra = `a`, debe **aceptar**):
+```
+{q0} →a→ {q0,q1} →a→ {q0,q1,q2} →b→ {q0,q2,q3}
+```
+Contiene `q3` ⇒ **ACEPTA** ✓.
+
+`baa` (tercera desde el final = 1ª letra = `b`, debe **rechazar**):
+```
+{q0} →b→ {q0} →a→ {q0,q1} →a→ {q0,q1,q2}
+```
+No contiene `q3` ⇒ **RECHAZA** ✓.
+
+> Nota didáctica: este lenguaje necesitaría **8 estados** como AFD (por la
+> construcción de subconjuntos, `2³`), pero solo **4** como AFND — el ejemplo
+> clásico de por qué a veces conviene diseñar el AFND directamente.
 
 ---
 
-## Pregunta 4 (14 pts)
+## Pregunta 3 — AFND-ε (12 pts)
 
-**a) (8 pts) Subconjuntos.** Desde `[q0]`:
+`δ(q0,ε)={q1,q2}`, `δ(q1,a)={q1}`, `δ(q2,b)={q2}`, `F={q1,q2}`.
+(Es la versión "a partir de q0 se puede tomar la rama de puras `a` o la de
+puras `b`", equivalente a `L = a* ∪ b*`.)
 
-- `A=[q0]`: a→`{q0,q1}`, b→`{q0}`
-- `B=[q0,q1]`: a→`{q0,q1}∪{q2}={q0,q1,q2}`, b→`{q0}∪{q2}={q0,q2}`
-- `C=[q0,q1,q2]`: a→`{q0,q1,q2}`, b→`{q0,q2}`
-- `D=[q0,q2]`: a→`{q0,q1}`, b→`{q0}`
+**a) (4 pts) ε-clausuras:**
+
+```
+εcl(q0) = {q0, q1, q2}     (q0 alcanza q1 y q2 por ε)
+εcl(q1) = {q1}             (sin transiciones ε salientes)
+εcl(q2) = {q2}
+```
+
+**b) (8 pts) Construcción de subconjuntos.** Estado inicial `S0 = εcl(q0) =
+{q0,q1,q2}` (ya es final, pues contiene `q1` y `q2` ⇒ acepta `ε`):
+
+- `S0 = {q0,q1,q2}`: con `a` → mueve `{q1}`, εcl → `{q1} = S1`.
+  Con `b` → mueve `{q2}`, εcl → `{q2} = S2`.
+- `S1 = {q1}` (final): con `a` → `{q1}`, εcl → `S1`. Con `b` → `∅` (trampa).
+- `S2 = {q2}` (final): con `b` → `{q2}`, εcl → `S2`. Con `a` → `∅` (trampa).
 
 | δ_D | a | b |
 |---|---|---|
-| → A = [q0] | B | A |
-| B = [q0,q1] | C | D |
-| * C = [q0,q1,q2] | C | D |
-| * D = [q0,q2] | B | A |
-
-Finales `{C, D}` (contienen q2). Todos alcanzables desde A ⇒ ninguno inalcanzable.
+| → * S0 = {q0,q1,q2} | S1 | S2 |
+| * S1 = {q1} | S1 | ∅ |
+| * S2 = {q2} | ∅ | S2 |
+| ∅ | ∅ | ∅ |
 
 ```mermaid
 graph LR
-    ini([inicio]) --> A
-    A["A = [q0]"]
-    B["B = [q0,q1]"]
-    C[["C = [q0,q1,q2]"]]
-    D[["D = [q0,q2]"]]
-    A -->|a| B
-    A -->|b| A
-    B -->|a| C
-    B -->|b| D
-    C -->|a| C
-    C -->|b| D
-    D -->|a| B
-    D -->|b| A
+    ini([inicio]) --> S0
+    S0(("S0 = {q0,q1,q2}"))
+    S1(("S1 = {q1}"))
+    S2(("S2 = {q2}"))
+    trap(("∅"))
+    S0 -->|a| S1
+    S0 -->|b| S2
+    S1 -->|a| S1
+    S1 -->|b| trap
+    S2 -->|b| S2
+    S2 -->|a| trap
+    trap -->|a,b| trap
 ```
 
-**b) (6 pts) Minimización.** `F={q4}`.
-
-`Π₀ = { q0 q1 q2 q3 | q4 }`
-
-- Grupo `{q0,q1,q2,q3}`:
-  `q3` con `0` y `1` va a `q4` (final) ⇒ **q3 se separa**.
-  `q0,q1,q2` con `0,1` van a estados no finales ⇒ quedan juntos por ahora.
-  `Π₁ = { q0 q1 q2 | q3 | q4 }`
-- Refinando `{q0,q1,q2}` con `Π₁` (sea G1=`{q0,q1,q2}`, G2=`{q3}`):
-  `q0`: 0→q1(G1), 1→q2(G1)
-  `q1`: 0→q1(G1), 1→q3(G2)
-  `q2`: 0→q2(G1), 1→q3(G2)
-  Con `1`, `q0`→G1 pero `q1,q2`→G2 ⇒ **q0 se separa**; `q1,q2` siguen juntos.
-  `Π₂ = { q0 | q1 q2 | q3 | q4 }`
-- Refinando `{q1,q2}`: ambos 0→G(`{q1,q2}`), 1→`{q3}` ⇒ **no se separan**.
-  `Π₃ = Π₂` (estable).
-
-**AFD mínimo:** `p0=q0`, `p12={q1,q2}`, `p3=q3`, `p4=q4`, `F={p4}` (5 → 4 estados):
-
-| δ | 0 | 1 |
-|---|---|---|
-| → p0 | p12 | p12 |
-| p12 | p12 | p3 |
-| p3 | p4 | p4 |
-| * p4 | p4 | p4 |
-
-```mermaid
-graph LR
-    ini([inicio]) --> p0
-    p0((p0))
-    p12["p12 = {q1,q2}"]
-    p3((p3))
-    p4(((p4)))
-    p0 -->|0,1| p12
-    p12 -->|0| p12
-    p12 -->|1| p3
-    p3 -->|0,1| p4
-    p4 -->|0,1| p4
-```
-
-*(a: 8 pts — construcción completa y finales correctos. b: 6 pts — 2 por Π₀,
-2 por el refinamiento, 2 por el AFD mínimo con la fusión `q1≡q2`.)*
+Verif. `aaa`: S0→S1→S1→S1 (final) ⇒ **ACEPTA** ✓. `ab`: S0→S1→∅ ⇒ **RECHAZA** ✓
+(mezclar `a` y `b` no está permitido: o solo `a`'s o solo `b`'s).
 
 ---
 
-## Pregunta 5 (8 pts)
+## Pregunta 4 — Autómata de Pila (10 pts)
 
-`L = {aⁿb²ⁿ / n > 0}`. Estrategia: apilar **dos** `X` por cada `a` (quedan `2n`),
-y desapilar **una** `X` por cada `b` (se requieren `2n` b's). `Γ = {X, Z}`:
+`L = {aⁿbᵐ / m ≥ n ≥ 0}`. `Γ = {X, Z}`, estados `q0` (apila `a`'s), `q1`
+(desapila mientras compara), `q2` (consume `b`'s excedentes), `qf`.
+
+**a) (6 pts) Tabla:**
 
 ```
-q0, a, Z → (q0, XXZ)     q0, a, X → (q0, XXX)     # cada 'a' apila 2 X
-q0, b, X → (q1, pop)                               # primera 'b': empieza a desapilar
-q1, b, X → (q1, pop)                               # cada 'b' desapila 1 X
-q1, ε, Z → (qf, Z)                                 # pila vacía ⇒ aceptar
+(q0, a, Z) → (q0, XZ)        # push por cada 'a'
+(q0, a, X) → (q0, XX)
+(q0, b, X) → (q1, pop)       # primera 'b': empieza a comparar
+(q0, b, Z) → (q2, Z)         # caso n=0: pasa directo a "b's extra"
+(q0, ε, Z) → (qf, Z)         # caso n=m=0: acepta la palabra vacía
+(q1, b, X) → (q1, pop)       # sigue comparando mientras haya X
+(q1, b, Z) → (q2, Z)         # ya no quedan X: b's adicionales (m>n)
+(q1, ε, Z) → (qf, Z)         # pila vacía exactamente al terminar: m=n
+(q2, b, Z) → (q2, Z)         # consume b's extra
+(q2, ε, Z) → (qf, Z)         # acepta (m>n)
 ```
 
-En tabla:
+**b) (2 pts) Criterio de aceptación:** se apila una `X` por cada `a`; cada `b`
+desapila una `X` mientras queden. Si la entrada termina con la pila en `Z`
+(sin `X` sobrantes) —ya sea porque se agotaron exactamente, o porque sobraron
+`b`'s después de vaciarla— la palabra se acepta. Si terminan las `b` habiendo
+`X` sin desapilar (sobraron `a`'s, `n > m`), la pila queda con `X` en el tope y
+**no** hay transición de aceptación ⇒ rechazo.
 
-| Γ \ input | a | b |
-|---|---|---|
-| **Z** | q0 \ push(XX) | q_fail |
-| **X** | q0 \ push(XX) [en q0] · q1 \ pop() [primera b] | q1 \ pop() |
+**c) (2 pts) Trazas:**
 
-**Criterio de aceptación:** al terminar la entrada la pila queda vacía (solo `Z`),
-lo que ocurre exactamente cuando el número de `b` es el doble del de `a`.
-Aristas leídas como `entrada, tope / reemplazo`:
+`aabbb` (n=2, m=3): `a,a`⇒pila `XXZ`; `b`⇒pop→`XZ`(q1); `b`⇒pop→`Z`(q1); `b`⇒
+`(q1,b,Z)→(q2,Z)`; fin de entrada en `q2` con `Z` ⇒ `(q2,ε,Z)→qf` ⇒ **ACEPTA** ✓.
 
-```mermaid
-graph LR
-    ini([inicio]) --> q0
-    q0(("q0<br/>(apila 2 X)"))
-    q1(("q1<br/>(desapila)"))
-    qf((("qf")))
-    q0 -->|"a, Z / XXZ"| q0
-    q0 -->|"a, X / XXX"| q0
-    q0 -->|"b, X / ε"| q1
-    q1 -->|"b, X / ε"| q1
-    q1 -->|"ε, Z / Z"| qf
-```
-
-**Traza `abb`** (n=1): `a` ⇒ pila `XXZ`; `b` ⇒ `pop` → `XZ` (paso a q1);
-`b` ⇒ `pop` → `Z`; entrada terminada con pila vacía ⇒ **ACEPTA** ✓.
-
-*(4 pts diseño push/pop, 2 pts criterio de aceptación, 2 pts traza.)*
+`aab` (n=2, m=1): `a,a`⇒pila `XXZ`; `b`⇒pop→`XZ`(q1); fin de entrada en `q1` con
+tope `X` (no `Z`) ⇒ no hay transición aplicable ⇒ **RECHAZA** ✓.
 
 ---
 
-## Pregunta 6 (4 pts)
+## Pregunta 5 — Máquina de Turing, 1 cinta (10 pts)
 
-**a) (2 pts)** `L((0+1)*00(0+1)*)` = palabras sobre `{0,1}` que **contienen la
-subcadena `00`**: `{ω ∈ {0,1}* / ω contiene 00}`.
+`L = {aⁿbⁿcⁿ / n ≥ 1}`. Alfabeto de cinta `{a,b,c,X,Y,Z,B}`.
 
-**b) (2 pts)** "Al menos una `a` y al menos una `b`" (aparecen en cualquier orden):
+**a) (6 pts) Estados y reglas** (estrategia de "marcar y barrer" repetido):
+
 ```
-(a+b)* a (a+b)* b (a+b)*   +   (a+b)* b (a+b)* a (a+b)*
+q0 (buscar una 'a' sin marcar, moviendo a la derecha):
+   lee 'a' → escribe X, mueve D, va a q1
+   lee 'X' → mueve D, se queda en q0 (salta a's ya marcadas)
+   lee 'Y' → mueve D, va a q4 (ya no quedan a's: pasar a verificación final)
+
+q1 (buscar una 'b' sin marcar):
+   lee 'a' o 'Y' → mueve D, se queda en q1 (salta lo ya visto)
+   lee 'b' → escribe Y, mueve D, va a q2
+   (si encuentra 'c' o B antes de una 'b' → RECHAZAR, faltan b's)
+
+q2 (buscar una 'c' sin marcar):
+   lee 'b' o 'Z' → mueve D, se queda en q2
+   lee 'c' → escribe Z, mueve I, va a q3
+   (si encuentra B antes de una 'c' → RECHAZAR, faltan c's)
+
+q3 (volver al extremo izquierdo):
+   lee 'X','Y','Z','a','b','c' → mueve I, se queda en q3
+   lee B (extremo) → mueve D, vuelve a q0  (retoma la búsqueda de la próxima 'a')
+
+q4 (verificación final: ya no quedan a's sin marcar):
+   lee 'Y' o 'Z' → mueve D, se queda en q4 (salta lo ya emparejado)
+   lee B → ACEPTAR (qf)
+   lee 'b' o 'c' (sin marcar) → RECHAZAR (sobran b's o c's: n distinto)
 ```
-*(Aceptar cualquier RegEx equivalente correcta.)*
+
+**b) (2 pts)** Un autómata de pila (Pregunta 4) solo dispone de **una pila**,
+que permite comparar **dos** cantidades a la vez (apilar con un símbolo,
+desapilar con otro). Para verificar `n_a = n_b = n_c` hace falta comparar
+**tres** cantidades simultáneamente, lo que excede lo que una sola pila puede
+"recordar". La MT sí puede, porque su cinta se puede **recorrer de ida y
+vuelta** cuantas veces sea necesario, marcando el progreso directamente sobre
+la entrada.
+
+**c) (2 pts)** `abc` (n=1): se marca la única `a`→X, la única `b`→Y, la única
+`c`→Z; al volver a `q0` ya no hay `a` sin marcar (se lee `Y`) ⇒ `q4`; se
+recorre `Y Z` y se llega al blanco sin `b` ni `c` sueltas ⇒ **ACEPTA**.
+`aabc` (n_a=2, n_b=1, n_c=1): tras marcar la 1ª `a`,`b`,`c`, se vuelve y se
+marca la 2ª `a`; en `q1` se busca una 2ª `b` sin marcar, pero solo quedan `Z`
+(la `c` ya marcada) y el blanco — no hay transición definida para `Z` en `q1`
+⇒ **RECHAZA** (sobra una `a` sin pareja).
 
 ---
 
-## Pregunta 7 (4 pts)
+## Pregunta 6 — Máquina de Turing, multicinta (8 pts)
 
-MT para el **sucesor** `f(n) = n + 1` en unario. Entrada `|ⁿ`:
+`f(n,m) = n·m`, cinta 1 = entrada `|ⁿ*|ᵐ`, cinta 2 = resultado (vacía al inicio).
+
+**a) (5 pts) Estrategia:**
 
 ```
-q0: mover a la derecha sobre '|'; al leer B (blanco), escribir '|' → q1 (HALT)
+Por cada una de las m marcas del bloque derecho (cinta 1):
+    copiar las n marcas del bloque izquierdo (cinta 1) al final de la cinta 2
+Al terminar de recorrer las m marcas, la cinta 2 contiene n · m marcas.
 ```
-Es decir, se avanza hasta el final del bloque de marcas y se **escribe una marca
-adicional** sobre el primer blanco. Resultado: `|ⁿ⁺¹`.
 
-Ejemplo: `|||` (3) → se avanza a la derecha, en el blanco se escribe `|` → `||||`
-(4). ✓
+Se usan estados para: (1) recorrer y marcar —sin repetir— una `|` del bloque
+`m` en la cinta 1, (2) recorrer las `n` marcas del bloque izquierdo en la
+cinta 1 copiando cada una al final de la cinta 2 (avanzando ambos cabezales en
+paralelo durante la copia), y (3) volver al inicio del bloque `n` y repetir
+hasta agotar el bloque `m`. Al terminar, la cinta 2 tiene exactamente `n·m`
+marcas.
 
-*(2 pts recorrido a la derecha, 2 pts escribir la marca en el blanco y detenerse.)*
+**b) (3 pts)** Con **una sola cinta** habría que "tachar" con un símbolo
+auxiliar cada marca del bloque `m` ya usada (para no volver a copiar el
+bloque `n` de más), y además intercalar en la misma cinta tanto la
+"contabilidad" de qué marca de `m` toca ahora como el resultado parcial que se
+va acumulando — todo compitiendo por el mismo espacio. Con **dos cintas** cada
+responsabilidad queda separada: la cinta 1 conserva intacta la entrada
+original (solo se marcan temporalmente sus símbolos) y la cinta 2 acumula el
+resultado sin interferir con la lectura de la entrada. Es el mismo motivo por
+el que la rutina de "copiar" es más simple con un segundo cabezal dedicado.
 
 ---
 
 ## Tabla de especificaciones (para el docente)
 
-| Preg. | Tipo evaluado | Módulo | Pts |
-|---|---|---|---|
-| 1 | Gramáticas / GR | 1 | 8 |
-| 2 | GRE → GR | 1 | 10 |
-| 3 | AFD vs AFND | 2 | 12 |
-| 4 | Subconjuntos + minimización | 2 | 14 |
-| 5 | Autómata apilador | 3 | 8 |
-| 6 | Expresiones regulares | 4 | 4 |
-| 7 | Máquina de Turing | 3 | 4 |
-| | | **Total** | **60** |
+| Preg. | Tema evaluado | Pts |
+|---|---|---|
+| 1 | AFD (diseño + argumento de minimalidad) | 10 |
+| 2 | AFND (diseño directo + análisis de hilos) | 10 |
+| 3 | AFND-ε (ε-clausura + subconjuntos) | 12 |
+| 4 | Autómata de Pila | 10 |
+| 5 | Máquina de Turing (1 cinta) | 10 |
+| 6 | Máquina de Turing (multicinta) | 8 |
+| | **Total** | **60** |
