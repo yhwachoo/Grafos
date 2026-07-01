@@ -195,26 +195,70 @@ naturalmente como "en algún punto de la palabra ocurre X", suele ser mucho más
 simple diseñar **directamente** un AFND, dejando que el no-determinismo
 "adivine" en qué posición ocurre X.
 
-**Ejemplo motivador.** Sea `Σ = {a, b}` y
-`L = {ω / el símbolo en la posición |ω|−2 es 'a'}` (es decir, la **tercera
-letra contada desde el final** es `a`, con `|ω| ≥ 3`).
+### La idea intuitiva: pensar en copias del autómata
 
-Como **AFD**, la máquina tendría que **recordar los últimos 3 símbolos
-leídos** en todo momento (para saber, al terminar, cuál fue el que quedó a 3
-posiciones del final) — eso exige `2³ = 8` estados, uno por cada combinación
-posible de los últimos 3 símbolos.
+Antes de ver la notación formal, conviene tener una imagen mental de qué
+significa que un AFND esté "en varios estados a la vez". Piensa que, en vez de
+una sola máquina leyendo la entrada, hay **muchas copias idénticas** de la
+máquina corriendo en paralelo, todas leyendo la **misma** palabra al **mismo
+tiempo**, sin comunicarse entre sí.
 
-Como **AFND**, basta con dejar que, en cualquier momento, un "hilo" **adivine**
-que el símbolo que se está leyendo es el candidato a tercera-desde-el-final, y
-a partir de ahí solo hay que **contar 2 símbolos más**:
+Cada vez que, para el símbolo que se está leyendo, el AFND tiene **más de una**
+transición posible, la copia que llega a ese punto **se clona**: una copia
+sigue por un camino, otra copia sigue por el otro. Si una copia llega a un
+símbolo para el que **no tiene** transición definida, esa copia simplemente
+"muere" (se descarta, no cuenta más). Al terminar de leer toda la palabra, si
+**al menos una** copia quedó viva en un estado final, la palabra se **acepta**
+— no importa que todas las demás hayan muerto en el camino o hayan terminado en
+un estado que no es final.
+
+Esta es la diferencia de fondo con el AFD: un AFD tiene que decidir, en cada
+paso, **un único camino**, así que —si no sabe de antemano cuándo va a
+terminar la palabra— muchas veces necesita **acumular toda la información
+posible dentro de su único estado** (como en el ejemplo de abajo, donde llegan
+a hacer falta 8 estados solo para "recordar" 3 símbolos). El AFND, en cambio,
+puede **repartir el trabajo entre varias copias**, cada una probando una
+hipótesis distinta, y dejar que el resto de la palabra decida cuál hipótesis
+era la correcta.
+
+### Ejemplo motivador, paso a paso
+
+Sea `Σ = {a, b}` y `L = {ω / la tercera letra contada desde el final de ω es
+'a'}` (con `|ω| ≥ 3`). Es decir, si `ω = x₁x₂…xₙ`, se pide `x_{n-2} = a`.
+
+**¿Por qué es difícil para un AFD?** Un AFD nunca puede "volver atrás" a releer
+la entrada, y tampoco sabe de antemano cuándo terminará la palabra. Por eso,
+para poder responder correctamente en cuanto la palabra termine, en **todo
+momento** necesita tener memorizados —dentro de su estado— los **últimos 3
+símbolos leídos**, por si el próximo resulta ser el último de la palabra. Como
+cada uno de esos 3 símbolos puede ser `a` o `b`, hay `2×2×2 = 8` combinaciones
+posibles ⇒ **8 estados**.
+
+**La idea del AFND:** en vez de recordar los últimos 3 símbolos todo el
+tiempo, dejamos que en **cada posición** de la palabra se "abra una apuesta":
+*"¿será este el símbolo que va a quedar a 3 posiciones del final?"*. Como
+buscamos que esa posición sea justo una `a`, solo tiene sentido apostar cuando
+se lee una `a` (apostar por una `b` nunca podría ganar). Las copias que **no**
+apuestan siguen esperando en el estado inicial, por si conviene apostar más
+adelante; las que **sí** apuestan solo necesitan **contar 2 símbolos más**
+para confirmar si su apuesta fue correcta.
+
+Con esto, cada estado representa un **rol** dentro de esa apuesta:
+
+| Estado | Rol de esa copia |
+|---|---|
+| `q0` | "Todavía no he apostado" (siempre activo, es el rol por defecto) |
+| `q1` | "Acabo de apostar: creo que la letra que acabo de leer es la candidata" |
+| `q2` | "Ya pasó una letra más desde mi apuesta" (mi candidata quedó, por ahora, a 2 del final) |
+| `q3` (final) | "Ya pasaron dos letras más desde mi apuesta" (¡mi candidata quedó exactamente a 3 del final! apuesta ganadora) |
 
 ```
-δ(q0,a) = {q0,q1}    δ(q0,b) = {q0}     (q0: sigue esperando, o "apuesta" a que
-                                          la letra actual es la 3ª desde el final)
-δ(q1,a) = {q2}       δ(q1,b) = {q2}     (q1: ya leyó la candidata; cualquier
-                                          símbolo cuenta como penúltimo)
-δ(q2,a) = {q3}       δ(q2,b) = {q3}     (q2: leyó el penúltimo; cualquier
-                                          símbolo cuenta como el último)
+δ(q0,a) = {q0,q1}    δ(q0,b) = {q0}     (se puede apostar solo con 'a'; con 'b'
+                                          ninguna copia nueva se abre)
+δ(q1,a) = {q2}       δ(q1,b) = {q2}     (cualquier símbolo cuenta como
+                                          "una letra más" tras la apuesta)
+δ(q2,a) = {q3}       δ(q2,b) = {q3}     (cualquier símbolo cuenta como
+                                          "dos letras más": ¡se confirma!)
 F = {q3}
 ```
 
@@ -232,13 +276,44 @@ graph LR
     q2 -->|a,b| q3
 ```
 
-Solo **4 estados** en vez de 8. Verif. `aab` (3ª desde el final = 1ª letra =
-`a`): `{q0}→a→{q0,q1}→a→{q0,q1,q2}→b→{q0,q2,q3}`, contiene `q3` ⇒ **ACEPTA**.
-`baa` (3ª desde el final = `b`): `{q0}→b→{q0}→a→{q0,q1}→a→{q0,q1,q2}`, sin
-`q3` ⇒ **RECHAZA**.
+**Viendo el árbol de copias en acción.** Para la palabra `aab`, así se van
+clonando (o muriendo) las copias, letra a letra:
+
+```mermaid
+graph TD
+    n0["copia inicial: q0"]
+    n0 -->|lee 'a' Nº1: no apuesta| n1["q0"]
+    n0 -->|lee 'a' Nº1: apuesta| n2["q1 (candidata = a Nº1)"]
+    n1 -->|lee 'a' Nº2: no apuesta| n3["q0"]
+    n1 -->|lee 'a' Nº2: apuesta| n4["q1 (candidata = a Nº2)"]
+    n2 -->|lee 'a' Nº2: 1 letra más| n5["q2"]
+    n3 -->|lee 'b': no apuesta| n6["q0 — palabra termina aquí"]
+    n4 -->|lee 'b': 1 letra más| n7["q2 — palabra termina aquí"]
+    n5 -->|lee 'b': 2 letras más| n8["q3 ✓ ACEPTA — palabra termina aquí"]
+```
+
+Al terminar la palabra quedan **tres copias vivas**: una en `q0`, una en `q2` y
+una en `q3`. Como la de `q3` (la que apostó por la **primera** `a`, y acertó:
+en efecto quedó a exactamente 3 posiciones del final) es un estado final,
+**la palabra completa se acepta** — sin que importe que las otras dos copias
+no hayan llegado a un final.
+
+**La notación compacta de la traza es justo este árbol, resumido.** Cuando
+más arriba (Tipo D, análisis de hilos) se escribe algo como
+
+```
+{q0} →a→ {q0,q1} →a→ {q0,q1,q2} →b→ {q0,q2,q3}
+```
+
+cada conjunto `{...}` es simplemente **la lista de estados donde hay copias
+vivas en ese instante** —no hace falta dibujar el árbol completo cada vez—.
+Verificando con esta notación: `aab` (3ª desde el final = 1ª letra = `a`):
+`{q0}→a→{q0,q1}→a→{q0,q1,q2}→b→{q0,q2,q3}`, contiene `q3` ⇒ **ACEPTA** (coincide
+con el árbol de arriba). `baa` (3ª desde el final = `b`):
+`{q0}→b→{q0}→a→{q0,q1}→a→{q0,q1,q2}`, sin `q3` ⇒ **RECHAZA**.
 
 **Regla práctica:** si el enunciado suena a *"en algún punto pasa algo, y lo
-que importa es lo que viene después"*, prueba primero con un AFND: cada hilo
+que importa es lo que viene después"*, prueba primero con un AFND: cada copia
 representa una hipótesis distinta de "dónde empieza lo importante", y no hace
 falta enumerar combinaciones como exigiría un AFD equivalente.
 
