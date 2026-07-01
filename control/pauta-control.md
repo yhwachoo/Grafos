@@ -192,6 +192,19 @@ En `q1` cada `b` hace `pop()`. **Criterio de aceptación:** al terminar la entra
 la pila queda vacía (solo `Z`), es decir se apiló una `X` por cada `a` y se
 desapiló una por cada `b` ⇒ igual número de `a` y `b`, con `n > 0`.
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(("q0<br/>(apila)"))
+    q1(("q1<br/>(desapila)"))
+    qf((("qf")))
+    q0 -->|"a, Z / XZ"| q0
+    q0 -->|"a, X / XX"| q0
+    q0 -->|"b, X / ε"| q1
+    q1 -->|"b, X / ε"| q1
+    q1 -->|"ε, Z / Z"| qf
+```
+
 ---
 
 ## Ítem 8 — MT `n + m`

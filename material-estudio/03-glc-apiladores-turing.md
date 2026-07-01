@@ -90,7 +90,21 @@ M = (Q, Σ, Γ, δ, q0, Z, F)
 | **Z** | q0 \ push(X) | q_fail |
 
 Estrategia: cada `a` apila una `X`; cada `b` desapila; se acepta si la pila queda
-vacía (queda `Z`) al terminar.
+vacía (queda `Z`) al terminar. Diagrama (las aristas se leen
+`entrada, tope / reemplazo`):
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(("q0<br/>(apila)"))
+    q1(("q1<br/>(desapila)"))
+    qf((("qf")))
+    q0 -->|"a, Z / XZ"| q0
+    q0 -->|"a, X / XX"| q0
+    q0 -->|"b, X / ε"| q1
+    q1 -->|"b, X / ε"| q1
+    q1 -->|"ε, Z / Z"| qf
+```
 
 **Ejemplo 2 — `L = {ωxωʳ / ω ∈ Σ*}`** con marca central `x`: se apilan los
 símbolos de `ω`; al leer `x` se cambia de estado; luego cada símbolo se compara

@@ -211,6 +211,20 @@ En tabla:
 
 **Criterio de aceptación:** al terminar la entrada la pila queda vacía (solo `Z`),
 lo que ocurre exactamente cuando el número de `b` es el doble del de `a`.
+Aristas leídas como `entrada, tope / reemplazo`:
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(("q0<br/>(apila 2 X)"))
+    q1(("q1<br/>(desapila)"))
+    qf((("qf")))
+    q0 -->|"a, Z / XXZ"| q0
+    q0 -->|"a, X / XXX"| q0
+    q0 -->|"b, X / ε"| q1
+    q1 -->|"b, X / ε"| q1
+    q1 -->|"ε, Z / Z"| qf
+```
 
 **Traza `abb`** (n=1): `a` ⇒ pila `XXZ`; `b` ⇒ `pop` → `XZ` (paso a q1);
 `b` ⇒ `pop` → `Z`; entrada terminada con pila vacía ⇒ **ACEPTA** ✓.

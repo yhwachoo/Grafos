@@ -347,6 +347,20 @@ graph LR
 
 En `q1`, cada `b` restante hace `pop()`; al ver `Z` con la entrada terminada,
 se acepta. Cada `a` apila una `X`; cada `b` desapila una ⇒ igual número.
+Aristas leídas como `entrada, tope / reemplazo`:
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(("q0<br/>(apila)"))
+    q1(("q1<br/>(desapila)"))
+    qf((("qf")))
+    q0 -->|"a, Z / XZ"| q0
+    q0 -->|"a, X / XX"| q0
+    q0 -->|"b, X / ε"| q1
+    q1 -->|"b, X / ε"| q1
+    q1 -->|"ε, Z / Z"| qf
+```
 
 **G2.** `L = {aᵐbⁿ / m = n+1}` (una `a` de más). Apilar una `X` por cada `a`;
 desapilar una por cada `b`; al final debe quedar **exactamente una** `X`:
@@ -360,6 +374,21 @@ q2, ε, Z → (qf, Z)       # aceptación
 ```
 Si sobrara más de una `X`, en `q2` el tope sería `X` (no `Z`) y no se acepta.
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(("q0<br/>(apila)"))
+    q1(("q1<br/>(desapila)"))
+    q2(("q2<br/>(verifica)"))
+    qf((("qf")))
+    q0 -->|"a, Z / XZ"| q0
+    q0 -->|"a, X / XX"| q0
+    q0 -->|"b, X / ε"| q1
+    q1 -->|"b, X / ε"| q1
+    q1 -->|"ε, X / ε"| q2
+    q2 -->|"ε, Z / Z"| qf
+```
+
 **G3.** `L = {aᵐbⁿ / m = 2n}` (dos `a` por cada `b`). Apilar `X` por cada `a`;
 por cada `b` desapilar **dos** `X` (una al leer `b`, otra con un `ε`):
 
@@ -370,6 +399,19 @@ q, ε, X → (p, pop)     # segundo pop, vuelve a leer b's
 p, ε, Z → (qf, Z)      # pila vacía ⇒ aceptar
 ```
 Verif. `aab` (m=2,n=1): `XZ→XXZ` (a,a); `b`: pop→`XZ`(q); ε pop→`Z`(p); ε,Z→acepta ✓.
+
+```mermaid
+graph LR
+    ini([inicio]) --> p
+    p(("p<br/>(apila / lee b)"))
+    q(("q<br/>(2º pop)"))
+    qf((("qf")))
+    p -->|"a, Z / XZ"| p
+    p -->|"a, X / XX"| p
+    p -->|"b, X / ε"| q
+    q -->|"ε, X / ε"| p
+    p -->|"ε, Z / Z"| qf
+```
 
 ---
 
