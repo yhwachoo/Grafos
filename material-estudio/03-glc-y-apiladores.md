@@ -1,6 +1,8 @@
-# Módulo 3 — GLC, autómatas apiladores y máquinas de Turing
+# Módulo 3 — GLC y autómatas apiladores
 
-> Basado en la clase U3C3.
+> Basado en la clase U3C3 (parte de gramáticas libres de contexto y autómatas
+> apiladores). Las **máquinas de Turing** se tratan aparte en el
+> [Módulo 4](04-maquinas-de-turing.md).
 
 ## 3.1 Motivación: los límites de lo regular
 
@@ -113,48 +115,24 @@ haciendo `pop`.
 **Ejemplo 3 — paréntesis balanceados**, `Γ = {C, Z}`: `(` hace `push(C)`,
 `)` hace `pop()`, cualquier otro símbolo deja la pila igual.
 
-## 3.4 Máquinas de Turing (MT)
+## 3.4 ¿Dónde encaja el apilador?
 
-El modelo más potente (tipo 0). Una **cinta infinita** de lectura/escritura y un
-**cabezal** que se mueve a izquierda o derecha, escribiendo símbolos y cambiando de
-estado. Reconoce cualquier lenguaje computable y además **calcula funciones**.
-
-### Sistema unitario
-
-Un número `n` se representa con `n` marcas `|`. `B` es el símbolo blanco.
-
-**Suma `f(n, m) = n + m`.** Cinta de entrada `3 + 4`:
-```
-∞ … B B B | | | + | | | | B B B … ∞
-```
-Idea: la MT reemplaza el `+` por una marca `|` y borra la última `|` (o desplaza),
-dejando `n + m` marcas juntas: `|||||||`.
-
-**Producto `f(n, m) = n * m`.** Cinta de entrada `4 * 3`:
-```
-∞ … B B B | | | | * | | | B B B … ∞
-```
-Idea: copiar el bloque de `n` marcas, `m` veces, usando estados que recuerden el
-avance. Se puede usar **una o varias cintas** (las MT multicinta son equivalentes
-en poder a la de una sola cinta, pero más cómodas de diseñar).
-
-### Máquinas decidibles vs calculables
-
-- **Decidible (reconocedora):** responde sí/no sobre la pertenencia de una palabra
-  a un lenguaje (se detiene siempre).
-- **Calculable (transductora):** produce en la cinta el resultado de una función.
-
-## 3.5 Cuadro comparativo de poder
+El apilador es la máquina que reconoce los **lenguajes libres de contexto** (tipo 2
+de la jerarquía de Chomsky): el AF (sin memoria auxiliar) queda un nivel abajo y la
+máquina de Turing (con cinta infinita) un nivel arriba.
 
 | Máquina | Memoria auxiliar | Reconoce |
 |---|---|---|
-| Autómata finito | ninguna (solo el estado) | lenguajes regulares |
-| Autómata apilador | una pila (LIFO) | lenguajes libres de contexto |
-| Máquina de Turing | cinta infinita R/W | lenguajes recursivamente enumerables |
+| Autómata finito | ninguna (solo el estado) | lenguajes regulares (tipo 3) |
+| **Autómata apilador** | **una pila (LIFO)** | **lenguajes libres de contexto (tipo 2)** |
+| Máquina de Turing | cinta infinita R/W | recursivamente enumerables (tipo 0) |
+
+> El siguiente escalón, la **máquina de Turing**, se estudia en el
+> [Módulo 4](04-maquinas-de-turing.md).
 
 ## Autoevaluación del módulo
 
 1. Escribe una GLC para `L = {aⁿb²ⁿ / n > 0}`.
 2. Diseña la tabla de transición de un a.a. para `L = {aⁿbⁿ / n > 0}`.
 3. Explica por qué `aⁿbⁿ` no es regular pero sí libre de contexto.
-4. Describe la estrategia de una MT que calcule `n + m` en sistema unitario.
+4. Da la estrategia (push/pop) de un a.a. para palíndromos `L = {ωωʳ}`.

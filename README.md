@@ -20,8 +20,9 @@ material-estudio/
   00-guia-rapida.md          Resumen ejecutivo y formulario (cheat sheet)
   01-lenguajes-y-gramaticas.md
   02-automatas-finitos.md
-  03-glc-apiladores-turing.md
-  04-expresiones-regulares.md
+  03-glc-y-apiladores.md
+  04-maquinas-de-turing.md
+  05-expresiones-regulares.md
 ejercicios/
   ejercicios.md              Ejercicios por tipo, con pistas
   soluciones-ejercicios.md   Soluciones desarrolladas

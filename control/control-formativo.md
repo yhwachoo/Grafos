@@ -83,14 +83,14 @@ de transición con `Γ = {X, Z}` y explica el criterio de aceptación.
 
 ---
 
-## Ítem 8 — Máquina de Turing (Módulo 3) · Tipo H
+## Ítem 8 — Máquina de Turing (Módulo 4) · Tipo H
 
 Describe (estados y movimientos) una **MT** que calcule `f(n, m) = n + m` en
 sistema unitario. Entrada de ejemplo: `||+|||` (2 + 3).
 
 ---
 
-## Ítem 9 — Expresiones regulares (Módulo 4) · Tipo I
+## Ítem 9 — Expresiones regulares (Módulo 5) · Tipo I
 
 a) Describe por comprensión `L(b(a + b)* a)`.
 b) Escribe una RegEx para "palabras sobre `{a,b}` con **al menos dos `a`**".
@@ -108,8 +108,8 @@ b) Escribe una RegEx para "palabras sobre `{a,b}` con **al menos dos `a`**".
 | 5 | E — subconjuntos | 2 | ☐ |
 | 6 | F — minimización | 2 | ☐ |
 | 7 | G — apilador | 3 | ☐ |
-| 8 | H — Turing | 3 | ☐ |
-| 9 | I — RegEx | 4 | ☐ |
+| 8 | H — Turing | 4 | ☐ |
+| 9 | I — RegEx | 5 | ☐ |
 
 Si fallaste **2 o más ítems de un mismo módulo**, vuelve a ese módulo antes de la
 prueba sumativa.

@@ -1,4 +1,4 @@
-# Módulo 4 — Expresiones regulares
+# Módulo 5 — Expresiones regulares
 
 > Basado en la clase U3C4 (*Teoría de Autómatas: expresiones regulares*).
 
