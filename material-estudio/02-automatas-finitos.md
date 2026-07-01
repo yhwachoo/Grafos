@@ -188,7 +188,61 @@ graph LR
 > **Regla mnemotécnica:** contar "módulo k" ⇒ **ciclo de k estados**; combinar dos
 > condiciones independientes ⇒ **producto cartesiano** (multiplica los estados).
 
-## 2.6 Equivalencia AFND → AFD (construcción de subconjuntos)
+## 2.6 Diseño directo de un AFND
+
+No siempre conviene pensar primero en un AFD: si el lenguaje se describe
+naturalmente como "en algún punto de la palabra ocurre X", suele ser mucho más
+simple diseñar **directamente** un AFND, dejando que el no-determinismo
+"adivine" en qué posición ocurre X.
+
+**Ejemplo motivador.** Sea `Σ = {a, b}` y
+`L = {ω / el símbolo en la posición |ω|−2 es 'a'}` (es decir, la **tercera
+letra contada desde el final** es `a`, con `|ω| ≥ 3`).
+
+Como **AFD**, la máquina tendría que **recordar los últimos 3 símbolos
+leídos** en todo momento (para saber, al terminar, cuál fue el que quedó a 3
+posiciones del final) — eso exige `2³ = 8` estados, uno por cada combinación
+posible de los últimos 3 símbolos.
+
+Como **AFND**, basta con dejar que, en cualquier momento, un "hilo" **adivine**
+que el símbolo que se está leyendo es el candidato a tercera-desde-el-final, y
+a partir de ahí solo hay que **contar 2 símbolos más**:
+
+```
+δ(q0,a) = {q0,q1}    δ(q0,b) = {q0}     (q0: sigue esperando, o "apuesta" a que
+                                          la letra actual es la 3ª desde el final)
+δ(q1,a) = {q2}       δ(q1,b) = {q2}     (q1: ya leyó la candidata; cualquier
+                                          símbolo cuenta como penúltimo)
+δ(q2,a) = {q3}       δ(q2,b) = {q3}     (q2: leyó el penúltimo; cualquier
+                                          símbolo cuenta como el último)
+F = {q3}
+```
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2((q2))
+    q3(((q3)))
+    q0 -->|a| q0
+    q0 -->|a| q1
+    q0 -->|b| q0
+    q1 -->|a,b| q2
+    q2 -->|a,b| q3
+```
+
+Solo **4 estados** en vez de 8. Verif. `aab` (3ª desde el final = 1ª letra =
+`a`): `{q0}→a→{q0,q1}→a→{q0,q1,q2}→b→{q0,q2,q3}`, contiene `q3` ⇒ **ACEPTA**.
+`baa` (3ª desde el final = `b`): `{q0}→b→{q0}→a→{q0,q1}→a→{q0,q1,q2}`, sin
+`q3` ⇒ **RECHAZA**.
+
+**Regla práctica:** si el enunciado suena a *"en algún punto pasa algo, y lo
+que importa es lo que viene después"*, prueba primero con un AFND: cada hilo
+representa una hipótesis distinta de "dónde empieza lo importante", y no hace
+falta enumerar combinaciones como exigiría un AFD equivalente.
+
+## 2.7 Equivalencia AFND → AFD (construcción de subconjuntos)
 
 **Teorema.** Para todo AFND existe un AFD que acepta el mismo lenguaje.
 
@@ -228,14 +282,66 @@ obtiene el AFD:
 
 con `q0` inicial y `F = {q3, q4, q5, q6, q7, q8}`.
 
-### AFND-ε: recuerda la ε-clausura
+### AFND-ε: la ε-clausura
 
-Antes de aplicar la construcción de subconjuntos a un AFND-ε, cada conjunto de
-estados debe **cerrarse bajo ε**: incluir todos los estados alcanzables por
-transiciones ε (sin leer símbolo). La ε-clausura se aplica tanto al estado inicial
-como después de cada transición.
+Un AFND-ε agrega transiciones `δ(q, ε)` que se pueden tomar **sin leer ningún
+símbolo**. Se define la **ε-clausura** de un estado `q`:
 
-## 2.7 Minimización de AFD
+```
+εcl(q) = { q } ∪ { todos los estados alcanzables desde q usando solo
+                    transiciones ε, cero o más veces }
+```
+
+Antes de aplicar la construcción de subconjuntos a un AFND-ε hay que **cerrar
+cada conjunto de estados bajo ε**: la ε-clausura se aplica (1) al estado
+inicial, para obtener el estado inicial del AFD, y (2) después de **cada**
+movimiento con un símbolo, antes de seguir construyendo.
+
+```
+Estado inicial del AFD = εcl(q0)
+δ_D(C, a) = εcl( ⋃_{p ∈ C} δ(p, a) )
+```
+
+**Ejemplo completo.** AFND-ε con `q0` inicial y `F = {q2}`:
+
+```
+δ(q0, ε) = {q1}    δ(q0, a) = {q0}
+δ(q1, b) = {q2}    δ(q2, ε) = {q1}
+```
+
+**ε-clausuras:** `εcl(q0) = {q0,q1}` (q0 alcanza q1 por ε), `εcl(q1) = {q1}`
+(sin salidas ε), `εcl(q2) = {q1,q2}` (q2 alcanza q1 por ε).
+
+Estado inicial del AFD: `S0 = εcl(q0) = {q0,q1}`.
+
+- `S0 = {q0,q1}`: con `a` → mueve a `{q0}`, εcl → `{q0,q1} = S0`.
+  Con `b` → mueve a `{q2}`, εcl → `{q1,q2} = S1`.
+- `S1 = {q1,q2}` (**final**, contiene `q2`): con `a` → `∅`. Con `b` → mueve a
+  `{q2}`, εcl → `{q1,q2} = S1`.
+
+| δ_D | a | b |
+|---|---|---|
+| → S0 = {q0,q1} | S0 | S1 |
+| * S1 = {q1,q2} | ∅ | S1 |
+
+```mermaid
+graph LR
+    ini([inicio]) --> S0
+    S0(("S0 = {q0,q1}"))
+    S1(("S1 = {q1,q2}"))
+    trap(("∅"))
+    S0 -->|a| S0
+    S0 -->|b| S1
+    S1 -->|b| S1
+    S1 -->|a| trap
+    trap -->|a,b| trap
+```
+
+Lenguaje resultante: `L = a* b⁺` (cualquier cantidad de `a`, luego al menos
+una `b`). Verif. `aab`: S0→S0→S0→S1 (final) ⇒ **ACEPTA**. `aba`: S0→S0→S1→∅
+⇒ **RECHAZA** (una vez que aparece `b`, ya no puede volver a leer `a`).
+
+## 2.8 Minimización de AFD
 
 Para cada AFD existe un AFD con **cantidad mínima** de estados que acepta el mismo
 lenguaje. Algoritmo:
@@ -276,7 +382,7 @@ graph LR
 
 Se concluye: `L(M4ND) = L(M4D) = L(M4Dmin) = L₄`.
 
-## 2.8 Variantes del apunte
+## 2.9 Variantes del apunte
 
 ### Autómata finito como modelo
 
