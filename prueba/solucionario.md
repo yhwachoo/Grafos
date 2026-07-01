@@ -65,6 +65,19 @@ una de las tres producciones largas.)*
 
 q0 = sin `a` pendiente; q1 = última `a` (esperando `b`); q2 = ya vi `ab` (absorbe).
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|a| q1
+    q0 -->|b| q0
+    q1 -->|a| q1
+    q1 -->|b| q2
+    q2 -->|a,b| q2
+```
+
 **b) (5 pts) AFND — contiene `ab`.** `F={q2}`:
 ```
 δ(q0,a) = {q0,q1}   δ(q0,b) = {q0}
@@ -77,6 +90,19 @@ q0 = sin `a` pendiente; q1 = última `a` (esperando `b`); q2 = ya vi `ab` (absor
 | → q0 | {q0,q1} | {q0} |
 | q1 | ∅ | {q2} |
 | * q2 | {q2} | {q2} |
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|a| q0
+    q0 -->|a| q1
+    q0 -->|b| q0
+    q1 -->|b| q2
+    q2 -->|a,b| q2
+```
 
 **c) (2 pts) Trazas (AFND):**
 `bab`: `{q0}→b→{q0}→a→{q0,q1}→b→{q0,q2}` ⇒ contiene q2 ⇒ **ACEPTA** ✓.
@@ -101,6 +127,23 @@ q0 = sin `a` pendiente; q1 = última `a` (esperando `b`); q2 = ya vi `ab` (absor
 | * D = [q0,q2] | B | A |
 
 Finales `{C, D}` (contienen q2). Todos alcanzables desde A ⇒ ninguno inalcanzable.
+
+```mermaid
+graph LR
+    ini([inicio]) --> A
+    A["A = [q0]"]
+    B["B = [q0,q1]"]
+    C[["C = [q0,q1,q2]"]]
+    D[["D = [q0,q2]"]]
+    A -->|a| B
+    A -->|b| A
+    B -->|a| C
+    B -->|b| D
+    C -->|a| C
+    C -->|b| D
+    D -->|a| B
+    D -->|b| A
+```
 
 **b) (6 pts) Minimización.** `F={q4}`.
 
@@ -127,6 +170,20 @@ Finales `{C, D}` (contienen q2). Todos alcanzables desde A ⇒ ninguno inalcanza
 | p12 | p12 | p3 |
 | p3 | p4 | p4 |
 | * p4 | p4 | p4 |
+
+```mermaid
+graph LR
+    ini([inicio]) --> p0
+    p0((p0))
+    p12["p12 = {q1,q2}"]
+    p3((p3))
+    p4(((p4)))
+    p0 -->|0,1| p12
+    p12 -->|0| p12
+    p12 -->|1| p3
+    p3 -->|0,1| p4
+    p4 -->|0,1| p4
+```
 
 *(a: 8 pts — construcción completa y finales correctos. b: 6 pts — 2 por Π₀,
 2 por el refinamiento, 2 por el AFD mínimo con la fusión `q1≡q2`.)*

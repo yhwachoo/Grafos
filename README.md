@@ -42,6 +42,12 @@ prueba/
 4. Toma el **control formativo** cronometrado para autoevaluarte.
 5. Rinde la **prueba** en 60 minutos y corrige con el solucionario.
 
+## Diagramas
+
+Los autómatas se ilustran con **diagramas Mermaid** (se renderizan automáticamente
+en GitHub). Convención: los estados finales se dibujan con **doble círculo**
+`(((qX)))` y el estado inicial se indica con una flecha desde el nodo `inicio`.
+
 ## Notación usada
 
 - `Σ` alfabeto de entrada · `ω` palabra · `ε` palabra vacía · `Σ*` clausura de Kleene.

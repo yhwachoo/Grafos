@@ -49,6 +49,19 @@ Y₂ → b
 q0 = sin `b` reciente; q1 = última leída `b`; q2 = ya vi `ba` (absorbe).
 Verif. `ba`: q0→q1→q2 ✓; `ab`: q0→q0→q1 ✗.
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|a| q0
+    q0 -->|b| q1
+    q1 -->|a| q2
+    q1 -->|b| q1
+    q2 -->|a,b| q2
+```
+
 ---
 
 ## Ítem 4 — Termina en `00`
@@ -61,11 +74,39 @@ Verif. `ba`: q0→q1→q2 ✓; `ab`: q0→q0→q1 ✗.
 | q1 | q2 | q0 |
 | * q2 | q2 | q0 |
 
+Diagrama AFD:
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|0| q1
+    q0 -->|1| q0
+    q1 -->|0| q2
+    q1 -->|1| q0
+    q2 -->|0| q2
+    q2 -->|1| q0
+```
+
 **(b) AFND** `F = {q2}`:
 ```
 δ(q0,0) = {q0,q1}   δ(q0,1) = {q0}
 δ(q1,0) = {q2}      δ(q1,1) = ∅
 (q2 sin transiciones de salida)
+```
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|0| q0
+    q0 -->|0| q1
+    q0 -->|1| q0
+    q1 -->|0| q2
 ```
 
 **(c) Trazas:**
@@ -87,6 +128,23 @@ Desde `[q0]`:
 
 Finales `{C, D}` (contienen q2). Todos alcanzables ⇒ no hay inalcanzables.
 
+```mermaid
+graph LR
+    ini([inicio]) --> A
+    A["A = [q0]"]
+    B["B = [q0,q1]"]
+    C[["C = [q0,q2]"]]
+    D[["D = [q0,q1,q2]"]]
+    A -->|0| B
+    A -->|1| A
+    B -->|0| B
+    B -->|1| C
+    C -->|0| D
+    C -->|1| C
+    D -->|0| D
+    D -->|1| C
+```
+
 ---
 
 ## Ítem 6 — Minimización
@@ -102,6 +160,22 @@ Finales `{C, D}` (contienen q2). Todos alcanzables ⇒ no hay inalcanzables.
 
 **Conclusión:** el AFD **ya es mínimo** (los 4 estados son distinguibles, no se
 fusiona ninguno).
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1(((q1)))
+    q2(((q2)))
+    q3((q3))
+    q0 -->|a| q1
+    q0 -->|b| q2
+    q1 -->|a| q1
+    q1 -->|b| q3
+    q2 -->|a| q3
+    q2 -->|b| q2
+    q3 -->|a,b| q3
+```
 
 ---
 

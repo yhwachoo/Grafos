@@ -70,11 +70,32 @@ columnas = símbolos.
 | → q0 | q1 | q4 |
 | q1 | q3 | q2 |
 | q2 | q4 | q1 |
-| q3 | q4 | q4 |
-| * q4 | q4 | q4 |
+| * q3 | q3 | q4 |
+| q4 | q4 | q4 |
 
-`q4` es un **estado colector de basura** (o "trampa"): absorbe toda entrada que ya
-no puede formar una palabra válida.
+Lectura: `q1` = cantidad **par** de `b` leídas; `q2` = cantidad **impar**; `q3` =
+aceptación (ya llegó ≥1 `a` final tras un número par de `b`). `q4` es un **estado
+colector de basura** (o "trampa"): absorbe toda entrada que ya no puede formar una
+palabra válida. Diagrama:
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2((q2))
+    q3(((q3)))
+    q4((q4))
+    q0 -->|a| q1
+    q0 -->|b| q4
+    q1 -->|a| q3
+    q1 -->|b| q2
+    q2 -->|a| q4
+    q2 -->|b| q1
+    q3 -->|a| q3
+    q3 -->|b| q4
+    q4 -->|a,b| q4
+```
 
 ## 2.5 Autómatas básicos (patrones que conviene memorizar)
 
@@ -159,7 +180,24 @@ Cada grupo de la partición final es un estado del AFD mínimo.
 **Ejemplo (del apunte).** Minimizando el `M4D` anterior:
 `Π₀ = {q0 q1 q2 | q3 q4 q5 q6 q7 q8}`. Refinando se llega a
 `Π = {q0 | q1 | q2 | q3 q4 q5 q6 q7 q8}`, es decir 4 estados:
-`p0=q0, p1=q1, p2=q2, p3={q3…q8}`, con `F = {p3}`.
+`p0=q0, p1=q1, p2=q2, p3={q3…q8}`, con `F = {p3}`. El AFD mínimo (que acepta
+`{x ∈ {0,1}* / x contiene 00 ó 11}`) queda:
+
+```mermaid
+graph LR
+    ini([inicio]) --> p0
+    p0((p0))
+    p1((p1))
+    p2((p2))
+    p3(((p3)))
+    p0 -->|0| p1
+    p0 -->|1| p2
+    p1 -->|0| p3
+    p1 -->|1| p2
+    p2 -->|0| p1
+    p2 -->|1| p3
+    p3 -->|0,1| p3
+```
 
 Se concluye: `L(M4ND) = L(M4D) = L(M4Dmin) = L₄`.
 

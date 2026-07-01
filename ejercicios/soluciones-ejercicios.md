@@ -78,6 +78,20 @@ evalúa si reconoces la forma regular y no "inventas" una transformación innece
 - q0: aún no hay una `a` "pendiente". q1: última leída es `a`. q2: acabo de leer `ab`.
 - Verif.: `ab`: q0→q1→q2 ✓; `abb`: q0→q1→q2→q0 ✗; `aab`: q0→q1→q1→q2 ✓.
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|a| q1
+    q0 -->|b| q0
+    q1 -->|a| q1
+    q1 -->|b| q2
+    q2 -->|a| q1
+    q2 -->|b| q0
+```
+
 **C2.** `L = {#a impar y #b par}`. Estados `(#a mod 2, #b mod 2)`:
 
 | δ | a | b |
@@ -89,6 +103,23 @@ evalúa si reconoces la forma regular y no "inventas" una transformación innece
 
 `q00` inicial (a par, b par), `F = {q10}` (a impar, b par). Leer `a` cambia la 1ª
 paridad; leer `b`, la 2ª.
+
+```mermaid
+graph LR
+    ini([inicio]) --> q00
+    q00((q00))
+    q10(((q10)))
+    q01((q01))
+    q11((q11))
+    q00 -->|a| q10
+    q00 -->|b| q01
+    q10 -->|a| q00
+    q10 -->|b| q11
+    q01 -->|a| q11
+    q01 -->|b| q00
+    q11 -->|a| q01
+    q11 -->|b| q10
+```
 
 **C3.** AFD **mínimo** para `#0 par` **y** `#1 impar`. Como las dos condiciones son
 independientes, hay `2 × 2 = 4` combinaciones ⇒ **4 estados** (y son todos
@@ -108,6 +139,23 @@ distinguibles, así que es mínimo):
 
 Verif. `001`: q00→q10→q00→q01 ∈ F ✓. `0011`: q00→q10→q00→q01→q00 ∉ F ✗.
 
+```mermaid
+graph LR
+    ini([inicio]) --> q00
+    q00((q00))
+    q01(((q01)))
+    q10((q10))
+    q11((q11))
+    q00 -->|0| q10
+    q00 -->|1| q01
+    q01 -->|0| q11
+    q01 -->|1| q00
+    q10 -->|0| q00
+    q10 -->|1| q11
+    q11 -->|0| q01
+    q11 -->|1| q10
+```
+
 ---
 
 ## Tipo D — AFD vs AFND (subcadena `aa`)
@@ -121,6 +169,19 @@ Verif. `001`: q00→q10→q00→q01 ∈ F ✓. `0011`: q00→q10→q00→q01→q
 | * q2 | q2 | q2 |
 
 q0 = ninguna `a` seguida; q1 = una `a`; q2 = ya vi `aa` (absorbe todo).
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|a| q1
+    q0 -->|b| q0
+    q1 -->|a| q2
+    q1 -->|b| q0
+    q2 -->|a,b| q2
+```
 
 **D1 (B) AFND.** `Q = {q0,q1,q2}`, `q0` inicial, `F = {q2}`:
 
@@ -137,6 +198,19 @@ q0 = ninguna `a` seguida; q1 = una `a`; q2 = ya vi `aa` (absorbe todo).
 | * q2 | {q2} | {q2} |
 
 Verif. `baa`: `{q0}→b→{q0}→a→{q0,q1}→a→{q0,q1,q2}`. Contiene `q2` ⇒ **ACEPTA** ✓.
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|a| q0
+    q0 -->|a| q1
+    q0 -->|b| q0
+    q1 -->|a| q2
+    q2 -->|a,b| q2
+```
 
 Ambos reconocen el mismo lenguaje (palabras con subcadena `aa`). El AFD necesita
 recordar cuántas `a` consecutivas lleva; el AFND aprovecha el no-determinismo para
@@ -176,6 +250,26 @@ Estado final del conjunto `{q0,q1}`, no contiene `q2` ⇒ **RECHAZA** ✓.
 
 Finales `= {C, D}` (contienen `q2`). Todos los estados son alcanzables ⇒ no hay
 inalcanzables que tachar.
+
+```mermaid
+graph LR
+    ini([inicio]) --> A
+    A["A = [q0]"]
+    B["B = [q0,q1]"]
+    C[["C = [q0,q1,q2]"]]
+    D[["D = [q0,q2]"]]
+    A -->|a| B
+    A -->|b| A
+    B -->|a| C
+    B -->|b| A
+    C -->|a| C
+    C -->|b| D
+    D -->|a| C
+    D -->|b| D
+```
+
+> Nota: en Mermaid el doble círculo `(((…)))` no admite corchetes en la etiqueta,
+> por eso los estados finales `C` y `D` se dibujan con nodo de **doble borde** `[[ ]]`.
 
 **E2.** AFND-ε: `δ(q0,ε)={q1}`, `δ(q0,a)={q0}`, `δ(q1,b)={q2}`, `δ(q2,ε)={q1}`,
 `F={q2}`. Primero las **ε-clausuras**:
@@ -223,6 +317,22 @@ AFD mínimo con `p0=q0, p1=q1, p2=q2, p3={q3…q8}`, `F={p3}`:
 | * p3 | p3 | p3 |
 
 (De 9 estados a 4. Este AFD acepta `{x ∈ {0,1}* / x contiene 00 ó 11}`.)
+
+```mermaid
+graph LR
+    ini([inicio]) --> p0
+    p0((p0))
+    p1((p1))
+    p2((p2))
+    p3(((p3)))
+    p0 -->|0| p1
+    p0 -->|1| p2
+    p1 -->|0| p3
+    p1 -->|1| p2
+    p2 -->|0| p1
+    p2 -->|1| p3
+    p3 -->|0,1| p3
+```
 
 ---
 
