@@ -111,16 +111,19 @@ palabras `aba` (debe rechazar) y `baab` (debe aceptar).
 
 ## Tipo E — AFND / AFND-ε → AFD (construcción de subconjuntos)
 
-**E1 🟡** Convierte a AFD el siguiente AFND (`F = {q2}`):
+**E1 🟡** Convierte a AFD el siguiente AFND sobre `Σ = {a, b}`, que acepta las
+palabras que **terminan en `aa` o en `bb`** (`q0` inicial, `F = {q2}`):
 
 ```
-δ(q0, a) = {q0, q1}    δ(q0, b) = {q0}
+δ(q0, a) = {q0, q1}    δ(q0, b) = {q0, q3}
 δ(q1, a) = {q2}        δ(q1, b) = ∅
-δ(q2, a) = {q2}        δ(q2, b) = {q2}
+δ(q3, b) = {q2}        δ(q3, a) = ∅
+(q2 sin transiciones de salida)
 ```
 
-**Se pide:** la tabla del AFD, indicando los estados finales y tachando los
-inalcanzables.
+**Se pide:** la tabla del AFD por construcción de subconjuntos, indicando los
+estados finales y tachando los inalcanzables. Verifica con `baa` (debe
+aceptar) y `aba` (debe rechazar).
 
 **E2 🔴** Dado un AFND-ε, explica y aplica cómo se usa la **ε-clausura** en la
 construcción de subconjuntos. Usa:

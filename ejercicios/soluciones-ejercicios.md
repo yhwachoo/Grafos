@@ -257,42 +257,57 @@ Estado final del conjunto `{q0,q1}`, no contiene `q2` ⇒ **RECHAZA** ✓.
 
 ## Tipo E — Conversión a AFD (subconjuntos)
 
-**E1.** AFND dado (es el mismo de D1-B). Construcción de subconjuntos desde `[q0]`:
+**E1.** AFND que acepta "termina en `aa` **o** en `bb`". La bifurcación
+`δ(q0,a)={q0,q1}` apuesta a que la `a` leída es la **penúltima** de un final
+`aa`; la bifurcación `δ(q0,b)={q0,q3}` hace lo mismo para un final `bb`.
+Construcción de subconjuntos desde `[q0]`:
 
-- `A = [q0]`: a→`{q0,q1}`, b→`{q0}`
-- `B = [q0,q1]`: a→`{q0,q1,q2}`, b→`{q0}`
-- `C = [q0,q1,q2]`: a→`{q0,q1,q2}`, b→`{q0,q2}`
-- `D = [q0,q2]`: a→`{q0,q1,q2}`, b→`{q0,q2}`
+- `A = [q0]`: a→`{q0,q1}`=B; b→`{q0,q3}`=C
+- `B = [q0,q1]`: a→`{q0,q1}∪{q2}`=`{q0,q1,q2}`=D; b→`{q0,q3}∪∅`=`{q0,q3}`=C
+- `C = [q0,q3]`: a→`{q0,q1}∪∅`=`{q0,q1}`=B; b→`{q0,q3}∪{q2}`=`{q0,q2,q3}`=E
+- `D = [q0,q1,q2]` (final): a→`{q0,q1,q2}`=D; b→`{q0,q3}`=C
+- `E = [q0,q2,q3]` (final): a→`{q0,q1}`=B; b→`{q0,q2,q3}`=E
 
 | δ_D | a | b |
 |---|---|---|
-| → A = [q0] | B | A |
-| B = [q0,q1] | C | A |
-| * C = [q0,q1,q2] | C | D |
-| * D = [q0,q2] | C | D |
+| → A = [q0] | B | C |
+| B = [q0,q1] | D | C |
+| C = [q0,q3] | B | E |
+| * D = [q0,q1,q2] | D | C |
+| * E = [q0,q2,q3] | B | E |
 
-Finales `= {C, D}` (contienen `q2`). Todos los estados son alcanzables ⇒ no hay
-inalcanzables que tachar.
+Finales `= {D, E}` (contienen `q2`). Todos los estados son alcanzables desde
+`A` ⇒ no hay inalcanzables que tachar.
 
 ```mermaid
 graph LR
     ini([inicio]) --> A
     A["A = [q0]"]
     B["B = [q0,q1]"]
-    C[["C = [q0,q1,q2]"]]
-    D[["D = [q0,q2]"]]
+    C["C = [q0,q3]"]
+    D[["D = [q0,q1,q2]"]]
+    E[["E = [q0,q2,q3]"]]
     A -->|a| B
-    A -->|b| A
-    B -->|a| C
-    B -->|b| A
-    C -->|a| C
-    C -->|b| D
-    D -->|a| C
-    D -->|b| D
+    A -->|b| C
+    B -->|a| D
+    B -->|b| C
+    C -->|a| B
+    C -->|b| E
+    D -->|a| D
+    D -->|b| C
+    E -->|a| B
+    E -->|b| E
 ```
 
 > Nota: en Mermaid el doble círculo `(((…)))` no admite corchetes en la etiqueta,
-> por eso los estados finales `C` y `D` se dibujan con nodo de **doble borde** `[[ ]]`.
+> por eso los estados finales `D` y `E` se dibujan con nodo de **doble borde** `[[ ]]`.
+
+Lectura del AFD resultante: `B` = "la última letra fue `a`", `C` = "la última
+fue `b`", `D` = "las dos últimas fueron `aa`" (acepta), `E` = "las dos últimas
+fueron `bb`" (acepta).
+
+Verif. `baa`: `A→b→C→a→B→a→D` ∈ F ⇒ **ACEPTA** ✓ (termina en `aa`).
+`aba`: `A→a→B→b→C→a→B` ∉ F ⇒ **RECHAZA** ✓ (termina en `ba`).
 
 **E2.** AFND-ε: `δ(q0,ε)={q1}`, `δ(q0,a)={q0}`, `δ(q1,b)={q2}`, `δ(q2,ε)={q1}`,
 `F={q2}`. Primero las **ε-clausuras**:
