@@ -65,9 +65,8 @@ graph LR
     q0((q0))
     q1((q1))
     q2(((q2)))
-    q0 -->|0| q0
+    q0 -->|"0,1"| q0
     q0 -->|0| q1
-    q0 -->|1| q0
     q1 -->|0| q2
 ```
 
@@ -140,8 +139,7 @@ graph LR
     q0(("q0<br/>(apila)"))
     q1(("q1<br/>(desapila)"))
     qf((("qf")))
-    q0 -->|"a, Z / XZ"| q0
-    q0 -->|"a, X / XX"| q0
+    q0 -->|"a, Z / XZ<br/>a, X / XX"| q0
     q0 -->|"b, X / ε"| q1
     q1 -->|"b, X / ε"| q1
     q1 -->|"ε, Z / Z"| qf

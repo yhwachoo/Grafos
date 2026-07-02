@@ -228,9 +228,8 @@ graph LR
     q0((q0))
     q1((q1))
     q2(((q2)))
-    q0 -->|a| q0
+    q0 -->|"a,b"| q0
     q0 -->|a| q1
-    q0 -->|b| q0
     q1 -->|a| q2
     q2 -->|a,b| q2
 ```
@@ -474,8 +473,7 @@ graph LR
     q0(("q0<br/>(apila)"))
     q1(("q1<br/>(desapila)"))
     qf((("qf")))
-    q0 -->|"a, Z / XZ"| q0
-    q0 -->|"a, X / XX"| q0
+    q0 -->|"a, Z / XZ<br/>a, X / XX"| q0
     q0 -->|"b, X / ε"| q1
     q1 -->|"b, X / ε"| q1
     q1 -->|"ε, Z / Z"| qf
@@ -500,8 +498,7 @@ graph LR
     q1(("q1<br/>(desapila)"))
     q2(("q2<br/>(verifica)"))
     qf((("qf")))
-    q0 -->|"a, Z / XZ"| q0
-    q0 -->|"a, X / XX"| q0
+    q0 -->|"a, Z / XZ<br/>a, X / XX"| q0
     q0 -->|"b, X / ε"| q1
     q1 -->|"b, X / ε"| q1
     q1 -->|"ε, X / ε"| q2
@@ -525,8 +522,7 @@ graph LR
     p(("p<br/>(apila / lee b)"))
     q(("q<br/>(2º pop)"))
     qf((("qf")))
-    p -->|"a, Z / XZ"| p
-    p -->|"a, X / XX"| p
+    p -->|"a, Z / XZ<br/>a, X / XX"| p
     p -->|"b, X / ε"| q
     q -->|"ε, X / ε"| p
     p -->|"ε, Z / Z"| qf

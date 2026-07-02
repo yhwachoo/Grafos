@@ -93,11 +93,10 @@ graph LR
     q1((q1))
     q2((q2))
     q3(((q3)))
-    q0 -->|a| q0
+    q0 -->|"a,b"| q0
     q0 -->|a| q1
-    q0 -->|b| q0
-    q1 -->|a,b| q2
-    q2 -->|a,b| q3
+    q1 -->|"a,b"| q2
+    q2 -->|"a,b"| q3
 ```
 
 **b) (3 pts) Trazas (análisis de hilos).** Recuerda que cada conjunto `{…}` es

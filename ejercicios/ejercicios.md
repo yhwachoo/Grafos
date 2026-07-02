@@ -143,11 +143,9 @@ graph LR
     q0((q0))
     q1((q1))
     q2(((q2)))
-    q0 -->|a| q0
-    q0 -->|b| q0
+    q0 -->|"a,b"| q0
     q0 -->|b| q1
-    q1 -->|a| q2
-    q1 -->|b| q2
+    q1 -->|"a,b"| q2
 ```
 
 **Se pide:**
@@ -230,11 +228,9 @@ graph LR
     q0(("q0<br/>(apila antes de x)"))
     q1(("q1<br/>(compara tras x)"))
     qf((("qf")))
-    q0 -->|"a, Y / AY  (Y cualquiera)"| q0
-    q0 -->|"b, Y / BY  (Y cualquiera)"| q0
+    q0 -->|"a, Y / AY<br/>b, Y / BY   (Y = cualquier tope)"| q0
     q0 -->|"x, Y / Y  (no cambia)"| q1
-    q1 -->|"a, A / ε"| q1
-    q1 -->|"b, B / ε"| q1
+    q1 -->|"a, A / ε<br/>b, B / ε"| q1
     q1 -->|"ε, Z / Z"| qf
 ```
 
