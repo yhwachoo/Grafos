@@ -43,6 +43,7 @@ control/
 prueba/
   prueba.md                  Prueba sumativa 3 (60 min, 60 pts, 6 preguntas)
   solucionario.md            Solucionario completo con puntajes
+  solucionario.pdf           Mismo solucionario en PDF, con diagramas renderizados
   prueba-imprimible.html     Versión para imprimir y resolver a mano
   prueba-imprimible.pdf      Misma versión, ya en PDF (A4, lista para imprimir)
 ```
