@@ -48,16 +48,43 @@ fusión posible.
 
 ## Pregunta 2 — AFND (10 pts)
 
-**a) (7 pts)** `L = {ω / la 3ª letra desde el final es 'a'}`. Diseño directo
-aprovechando el no-determinismo: en `q0` el autómata "sigue esperando" (bucle) o
-**adivina** que el símbolo actual es la tercera desde el final. `Q =
-{q0,q1,q2,q3}`, `q0` inicial, `F = {q3}`:
+**Entendiendo el enunciado.** `L = {ω / la 3ª letra desde el final es 'a'}`.
+Si escribimos la palabra como `ω = x₁x₂…xₙ`, la condición es `x_{n−2} = a`.
+Por ejemplo, en `aab` la tercera desde el final es la **primera** `a` (luego
+vienen 2 letras más: `a` y `b`) ⇒ pertenece a `L`; en `baa` la tercera desde
+el final es la `b` ⇒ no pertenece.
+
+**¿Por qué conviene un AFND aquí?** El problema es que, mientras lee, el
+autómata **no sabe cuándo va a terminar la palabra** — así que no puede saber
+qué letra quedará "a 3 del final" hasta que ya sea tarde. Un AFD tendría que ir
+recordando en todo momento las últimas 3 letras leídas (2³ = 8 estados). El
+AFND lo resuelve de otra forma: deja que en cada `a` leída se abra una
+**apuesta** — *"¿y si esta `a` es justo la que quedará a 3 del final?"*. Cada
+apuesta es una "copia" del autómata que corre en paralelo; la palabra se acepta
+si **al menos una** apuesta resulta ganadora al terminar la lectura.
+
+**a) (7 pts)** Cada estado representa una etapa de esa apuesta:
+
+| Estado | Significado de esa copia |
+|---|---|
+| `q0` | "Todavía no aposté" — sigue leyendo cualquier cosa (siempre hay una copia aquí) |
+| `q1` | "Acabo de apostar: la `a` que leí sería la 3ª desde el final" |
+| `q2` | "Ya pasó **1** letra desde mi apuesta" (mi `a` está, por ahora, a 2 del final) |
+| `q3` (final) | "Ya pasaron **2** letras desde mi apuesta" — si la palabra termina aquí, ¡gané! |
+
+`M = ({q0,q1,q2,q3}, {a,b}, δ, q0, {q3})` con:
 
 ```
-δ(q0,a) = {q0,q1}    δ(q0,b) = {q0}
-δ(q1,a) = {q2}       δ(q1,b) = {q2}
-δ(q2,a) = {q3}       δ(q2,b) = {q3}
+δ(q0,a) = {q0,q1}    δ(q0,b) = {q0}     ← solo se apuesta al leer 'a' (apostar
+                                           por una 'b' nunca podría ganar)
+δ(q1,a) = {q2}       δ(q1,b) = {q2}     ← 1ª letra tras la apuesta: cualquiera sirve
+δ(q2,a) = {q3}       δ(q2,b) = {q3}     ← 2ª letra tras la apuesta: cualquiera sirve
 ```
+
+Nota que desde `q3` **no hay transiciones**: si después de llegar a `q3` la
+palabra continúa, esa copia muere — significa que su `a` quedó a más de 3 del
+final y la apuesta se pierde. Eso está bien: otra copia (la que esperó en `q0`)
+puede haber apostado más tarde.
 
 ```mermaid
 graph LR
@@ -73,23 +100,35 @@ graph LR
     q2 -->|a,b| q3
 ```
 
-**b) (3 pts) Trazas (análisis de hilos):**
+**b) (3 pts) Trazas (análisis de hilos).** Recuerda que cada conjunto `{…}` es
+la lista de estados donde hay copias vivas en ese instante.
 
-`aab` (tercera desde el final = 1ª letra = `a`, debe **aceptar**):
+`aab` — la 3ª desde el final es la 1ª letra (`a`) ⇒ debe **aceptar**:
 ```
 {q0} →a→ {q0,q1} →a→ {q0,q1,q2} →b→ {q0,q2,q3}
 ```
-Contiene `q3` ⇒ **ACEPTA** ✓.
+Paso a paso: con la 1ª `a` una copia apuesta (`q1`) y otra espera (`q0`); con
+la 2ª `a` la apuesta original avanza a `q2` **y además** se abre una apuesta
+nueva por esta segunda `a` (`q1`); con la `b` final la apuesta original llega a
+`q3` (pasaron exactamente 2 letras desde su `a`) y la segunda avanza a `q2`.
+La palabra termina y el conjunto final `{q0,q2,q3}` **contiene `q3`** — la
+primera apuesta ganó ⇒ **ACEPTA** ✓.
 
-`baa` (tercera desde el final = 1ª letra = `b`, debe **rechazar**):
+`baa` — la 3ª desde el final es la `b` ⇒ debe **rechazar**:
 ```
 {q0} →b→ {q0} →a→ {q0,q1} →a→ {q0,q1,q2}
 ```
-No contiene `q3` ⇒ **RECHAZA** ✓.
+Con la `b` nadie puede apostar (solo hay lazo en `q0`); las dos `a` siguientes
+abren apuestas, pero a la primera solo le alcanzó para avanzar hasta `q2`
+(pasó **1** letra desde su `a`, no 2) y a la segunda recién le tocó apostar
+(`q1`). La palabra termina y `{q0,q1,q2}` **no contiene `q3`**: ninguna
+apuesta alcanzó a confirmarse ⇒ **RECHAZA** ✓.
 
 > Nota didáctica: este lenguaje necesitaría **8 estados** como AFD (por la
-> construcción de subconjuntos, `2³`), pero solo **4** como AFND — el ejemplo
-> clásico de por qué a veces conviene diseñar el AFND directamente.
+> construcción de subconjuntos, `2³` combinaciones de las últimas 3 letras),
+> pero solo **4** como AFND — el ejemplo clásico de por qué, cuando el
+> enunciado dice "en cierta posición pasa algo", conviene diseñar el AFND
+> directamente.
 
 ---
 
