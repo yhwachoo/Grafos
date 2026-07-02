@@ -201,6 +201,37 @@ Verif. `aaa`: S0→S1→S1→S1 (final) ⇒ **ACEPTA** ✓. `ab`: S0→S1→∅ 
 (q2, ε, Z) → (qf, Z)         # acepta (m>n)
 ```
 
+Diagrama de estados (las aristas se leen `entrada, tope de pila / reemplazo`).
+Recuerda los roles de los símbolos de pila: **`Z`** es el **fondo de pila**
+(nunca se saca; verlo en el tope significa "no queda nada apilado" y habilita
+aceptar) y **`X`** es la **ficha de conteo** (una por cada `a` que aún espera
+su `b`):
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(("q0<br/>(apila a's)"))
+    q1(("q1<br/>(compara)"))
+    q2(("q2<br/>(b's extra)"))
+    qf((("qf")))
+    q0 -->|"a, Z / XZ<br/>a, X / XX"| q0
+    q0 -->|"b, X / ε"| q1
+    q0 -->|"b, Z / Z"| q2
+    q0 -->|"ε, Z / Z"| qf
+    q1 -->|"b, X / ε"| q1
+    q1 -->|"b, Z / Z"| q2
+    q1 -->|"ε, Z / Z"| qf
+    q2 -->|"b, Z / Z"| q2
+    q2 -->|"ε, Z / Z"| qf
+```
+
+Lectura del diagrama: en `q0` cada `a` deja una ficha `X` (el lazo con sus dos
+reglas: sobre fondo `Z` o sobre otra `X`); la primera `b` pasa a `q1`, donde
+cada `b` cobra una ficha (`pop`). Si el tope vuelve a ser `Z` y todavía vienen
+`b`'s, se pasa a `q2` (son las `b` "extra" permitidas porque `m ≥ n`). Los tres
+estados pueden aceptar vía `ε, Z / Z`, pero **solo** si el tope es `Z` — si
+queda alguna `X` (una `a` sin su `b`), ninguna transición a `qf` aplica.
+
 **b) (2 pts) Criterio de aceptación:** se apila una `X` por cada `a`; cada `b`
 desapila una `X` mientras queden. Si la entrada termina con la pila en `Z`
 (sin `X` sobrantes) —ya sea porque se agotaron exactamente, o porque sobraron
