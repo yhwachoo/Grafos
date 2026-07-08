@@ -46,6 +46,12 @@ material-estudio/
 ejercicios/
   ejercicios.md              Ejercicios por tipo (U3), con lectura de diagramas
   soluciones-ejercicios.md   Soluciones desarrolladas
+  propuestos/                Ejercicios y controles OFICIALES del curso
+    u2-ejercicios-prueba-1.md            15 ejercicios de grafos (Prueba 1)
+    u3-afd-afnd-afnde.md                 Guía oficial AFD/AFND/AFND-λ
+    u3-gramaticas-regulares.md           Guía oficial de GR (G1-G7, GRE→GR)
+    u3-controles-oficiales-con-pauta.md  Controles 3 y 4 con pautas verificadas
+    u3-guias-resueltas.md                Índice comentado de las 2 guías resueltas
 control/
   control-formativo.md           Ensayo por tema (U3, 6 ítems)
   pauta-control.md               Pauta de corrección del anterior
