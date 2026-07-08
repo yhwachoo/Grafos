@@ -96,5 +96,5 @@ aceptación.
 | 6 | Máquina de Turing (multicinta) | ☐ |
 
 Si fallaste **2 o más ítems**, vuelve al módulo correspondiente
-(`material-estudio/02` para AFD/AFND/AFND-ε, `03` para autómatas de pila,
-`04` para máquinas de Turing) antes de la prueba sumativa.
+(`material-estudio/unidad-3-automatas/02` para AFD/AFND/AFND-ε, `03` para
+autómatas de pila, `04` para máquinas de Turing) antes de la prueba sumativa.
