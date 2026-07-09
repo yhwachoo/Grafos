@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Prueba Sumativa 3 — Unidad 3: Teoría de Autómatas</title>
+<style>
+  @page {
+    size: A4;
+    margin: 16mm 14mm 18mm 14mm;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    color: #1a1a1a;
+    font-size: 11.5pt;
+    line-height: 1.45;
+  }
+  .header {
+    text-align: center;
+    border-bottom: 2px solid #222;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 15pt;
+    margin: 0 0 2px 0;
+  }
+  .header .subt {
+    font-size: 10pt;
+    color: #333;
+  }
+  .datos {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 4px 0;
+    font-size: 10.5pt;
+  }
+  .datos-col { flex: 1; }
+  .line {
+    display: inline-block;
+    border-bottom: 1px solid #444;
+    min-width: 160px;
+    margin-left: 4px;
+  }
+  .instrucciones {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 9.8pt;
+    margin: 10px 0 14px 0;
+  }
+  .instrucciones ul { margin: 4px 0 0 0; padding-left: 18px; }
+  .alcance {
+    font-size: 9.3pt;
+    color: #444;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  table.puntaje {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 14px 0;
+    font-size: 9.5pt;
+  }
+  table.puntaje th, table.puntaje td {
+    border: 1px solid #999;
+    padding: 3px 6px;
+    text-align: center;
+  }
+  table.puntaje th { background: #eee; }
+  .pregunta {
+    margin-top: 18px;
+    page-break-inside: avoid;
+  }
+  .pregunta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1.5px solid #444;
+    padding-bottom: 3px;
+    margin-bottom: 8px;
+  }
+  .pregunta-header h2 {
+    font-size: 12.5pt;
+    margin: 0;
+  }
+  .pts {
+    font-size: 10pt;
+    font-weight: bold;
+    color: #444;
+    white-space: nowrap;
+  }
+  .enunciado {
+    margin-bottom: 6px;
+  }
+  .enunciado code, code {
+    font-family: "Courier New", monospace;
+    background: #f0f0f0;
+    padding: 0 2px;
+    border-radius: 2px;
+    font-size: 0.95em;
+  }
+  .sub {
+    margin: 6px 0 6px 4px;
+  }
+  .respuesta-area {
+    border: 1px dashed #999;
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 27px,
+        #dcdcdc 28px
+      );
+    margin-top: 6px;
+  }
+  .respuesta-area.small { height: 90px; }
+  .respuesta-area.medium { height: 150px; }
+  .respuesta-area.large { height: 220px; }
+  .respuesta-area.xlarge { height: 300px; }
+  .page-break {
+    page-break-before: always;
+  }
+  .diagrama-espacio {
+    border: 1px solid #bbb;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 9px, #eee 10px
+    ), repeating-linear-gradient(
+      90deg, transparent, transparent 9px, #eee 10px
+    );
+    height: 130px;
+    margin-top: 6px;
+    position: relative;
+  }
+  .diagrama-espacio::before {
+    content: "Diagrama:";
+    position: absolute;
+    top: 3px;
+    left: 5px;
+    font-size: 8pt;
+    color: #888;
+    font-family: sans-serif;
+  }
+  .footer-note {
+    text-align: center;
+    font-size: 9pt;
+    color: #666;
+    margin-top: 24px;
+    border-top: 1px solid #ccc;
+    padding-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Prueba Sumativa 3 — Unidad 3: Teoría de Autómatas</h1>
+  <div class="subt">Grafos y Lenguajes Formales · UTEM &nbsp;|&nbsp; Duración: 60 minutos &nbsp;|&nbsp; Puntaje total: 60 puntos</div>
+</div>
+
+<div class="datos">
+  <div class="datos-col">Nombre: <span class="line" style="min-width:220px;"></span></div>
+  <div class="datos-col">RUT: <span class="line" style="min-width:120px;"></span></div>
+</div>
+<div class="datos">
+  <div class="datos-col">Sección: <span class="line" style="min-width:100px;"></span></div>
+  <div class="datos-col">Fecha: <span class="line" style="min-width:100px;"></span></div>
+  <div class="datos-col">Puntaje obtenido: <span class="line" style="min-width:70px;"></span> / 60</div>
+</div>
+
+<div class="instrucciones">
+  <strong>Instrucciones</strong>
+  <ul>
+    <li>Responde con procedimiento completo: tablas, ε-clausuras, particiones y trazas. Una respuesta sin desarrollo no recibe puntaje.</li>
+    <li>Notación: <code>M = (Q, Σ, δ, q0, F)</code> para autómatas finitos; <code>M = (Q, Σ, Γ, δ, q0, Z, F)</code> para autómatas de pila; <code>M = (Q, Σ, Γ, δ, q0, B, F)</code> para máquinas de Turing.</li>
+    <li>Puedes usar la guía de notación, pero <strong>no</strong> el material de estudio.</li>
+  </ul>
+  <div class="alcance">Contenidos evaluados: AFD · AFND · AFND-ε · Autómatas de Pila · Máquinas de Turing (1 cinta) · Máquinas de Turing (multicinta).</div>
+</div>
+
+<table class="puntaje">
+  <tr>
+    <th>Pregunta</th><th>1 — AFD</th><th>2 — AFND</th><th>3 — AFND-ε</th><th>4 — Pila</th><th>5 — MT 1 cinta</th><th>6 — MT multicinta</th><th>Total</th>
+  </tr>
+  <tr>
+    <td>Puntaje máx.</td><td>10</td><td>10</td><td>12</td><td>10</td><td>10</td><td>8</td><td>60</td>
+  </tr>
+  <tr>
+    <td>Obtenido</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+  </tr>
+</table>
+
+<!-- ============ PREGUNTA 1 — AFD ============ -->
+<div class="pregunta">
+  <div class="pregunta-header">
+    <h2>Pregunta 1 — AFD</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>Σ = {a, b}</code> y <code>L = {ω ∈ Σ* / ω contiene la subcadena "aab"}</code>.
+
+    <div class="sub"><strong>a) (7 pts)</strong> Diseña un <strong>AFD</strong> que reconozca <code>L</code>: quíntupla, tabla de transición y diagrama de estados.</div>
+    <div class="respuesta-area medium"></div>
+    <div class="diagrama-espacio"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (3 pts)</strong> Justifica si tu AFD es <strong>mínimo</strong> (sin aplicar el algoritmo completo, argumenta por qué los estados no podrían fusionarse).</div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 2 — AFND (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 2 — AFND</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>Σ = {a, b}</code> y <code>L = {ω ∈ Σ* / la tercera letra contada desde el final de ω es 'a'}</code>
+    (es decir, <code>|ω| ≥ 3</code> y el símbolo en la posición <code>|ω| − 2</code> es <code>a</code>).
+
+    <div class="sub"><strong>a) (7 pts)</strong> Diseña <strong>directamente</strong> un <strong>AFND</strong> (δ en conjuntos) que reconozca <code>L</code>, aprovechando el no-determinismo para "adivinar" cuál es la tercera letra desde el final. Da la quíntupla y el diagrama.</div>
+    <div class="respuesta-area medium"></div>
+    <div class="diagrama-espacio"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (3 pts)</strong> Traza (análisis de hilos) las palabras <code>aab</code> (debe <strong>aceptar</strong>) y <code>baa</code> (debe <strong>rechazar</strong>).</div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 3 — AFND-ε (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 3 — AFND-ε</h2>
+    <span class="pts">(12 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea el siguiente AFND-ε (<code>q0</code> inicial, <code>F = {q1, q2}</code>):<br>
+    <code>δ(q0, ε) = {q1, q2}</code>&nbsp;&nbsp; <code>δ(q1, a) = {q1}</code>&nbsp;&nbsp; <code>δ(q2, b) = {q2}</code>
+
+    <div class="sub"><strong>a) (4 pts)</strong> Calcula la <strong>ε-clausura</strong> de cada estado.</div>
+    <div class="respuesta-area small"></div>
+
+    <div class="sub" style="margin-top:10px;">
+      <strong>b) (8 pts)</strong> Construye el <strong>AFD equivalente</strong> por construcción de subconjuntos (usa las ε-clausuras).
+      Entrega la tabla completa, indica los estados finales y verifica con las palabras <code>aaa</code> (debe <strong>aceptar</strong>) y <code>ab</code> (debe <strong>rechazar</strong>).
+    </div>
+    <div class="respuesta-area large"></div>
+    <div class="diagrama-espacio"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 4 — Autómata de Pila (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 4 — Autómata de Pila</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>Σ = {a, b}</code> y <code>L = {aⁿbᵐ / m ≥ n ≥ 0}</code>
+    (cero o más <code>a</code> seguidas de al menos tantas <code>b</code> como <code>a</code> hubo).
+
+    <div class="sub"><strong>a) (6 pts)</strong> Diseña un <strong>autómata de pila</strong> que reconozca <code>L</code>. Entrega la tabla de transición con <code>Γ = {X, Z}</code>.</div>
+    <div class="respuesta-area medium"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (2 pts)</strong> Explica el criterio de aceptación.</div>
+    <div class="respuesta-area small"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>c) (2 pts)</strong> Traza las palabras <code>aabbb</code> (debe <strong>aceptar</strong>, n=2, m=3) y <code>aab</code> (debe <strong>rechazar</strong>, n=2, m=1).</div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 5 — MT 1 cinta (page break) ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 5 — Máquina de Turing (1 cinta)</h2>
+    <span class="pts">(10 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>L = {aⁿbⁿcⁿ / n ≥ 1}</code>.
+
+    <div class="sub"><strong>a) (6 pts)</strong> Describe (estados y reglas de movimiento) una <strong>MT de 1 cinta</strong> que reconozca <code>L</code>, usando símbolos auxiliares para marcar el progreso.</div>
+    <div class="respuesta-area large"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (2 pts)</strong> Explica por qué un <strong>autómata de pila</strong> (Pregunta 4) no puede reconocer este lenguaje.</div>
+    <div class="respuesta-area small"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>c) (2 pts)</strong> Describe brevemente qué ocurre al procesar <code>abc</code> (debe <strong>aceptar</strong>) y <code>aabc</code> (debe <strong>rechazar</strong>).</div>
+    <div class="respuesta-area small"></div>
+  </div>
+</div>
+
+<!-- ============ PREGUNTA 6 — MT multicinta ============ -->
+<div class="pregunta page-break">
+  <div class="pregunta-header">
+    <h2>Pregunta 6 — Máquina de Turing (multicinta)</h2>
+    <span class="pts">(8 pts)</span>
+  </div>
+  <div class="enunciado">
+    Sea <code>f(n, m) = n · m</code>, calculada en sistema unitario con una <strong>MT de 2 cintas</strong>
+    (cinta 1: entrada <code>|ⁿ * |ᵐ</code>; cinta 2: resultado, inicialmente vacía).
+
+    <div class="sub"><strong>a) (5 pts)</strong> Describe la estrategia: qué contiene cada cinta en cada momento y qué ocurre en cada "ronda" del cómputo.</div>
+    <div class="respuesta-area medium"></div>
+
+    <div class="sub" style="margin-top:10px;"><strong>b) (3 pts)</strong> Explica por qué este diseño es más simple con <strong>dos cintas</strong> que con una sola (¿qué habría que "recordar" con símbolos auxiliares si solo hubiera una cinta?).</div>
+    <div class="respuesta-area medium"></div>
+  </div>
+</div>
+
+<div class="footer-note">
+  Fin de la prueba. Revisa tus trazas antes de entregar. — Unidad 3: Teoría de Autómatas · Grafos y Lenguajes Formales
+</div>
+
+</body>
+</html>
