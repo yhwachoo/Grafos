@@ -48,6 +48,31 @@ Lectura: `q1/q2` = fase de `a` con total impar/par; `q3/q5` = fase de `b` con
 total par; `q4` = fase de `b` con total impar (final); `q6` = basura (una `a`
 después de una `b`). **Verificada contra todas las palabras de largo ≤ 7 ✓.**
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1(((q1)))
+    q2((q2))
+    q3((q3))
+    q4(((q4)))
+    q5((q5))
+    q6((q6))
+    q0 -->|a| q1
+    q0 -->|b| q4
+    q1 -->|a| q2
+    q1 -->|b| q3
+    q2 -->|a| q1
+    q2 -->|b| q4
+    q3 -->|a| q6
+    q3 -->|b| q4
+    q4 -->|a| q6
+    q4 -->|b| q5
+    q5 -->|a| q6
+    q5 -->|b| q4
+    q6 -->|"a,b"| q6
+```
+
 **GR equivalente (versión propia, mismo lenguaje):**
 ```
 S → aP | b | bQ        P → aS | b | bQ        Q → bR        R → b | bQ
@@ -75,6 +100,25 @@ L) — probablemente por un error de transcripción del documento. Versión
 `F = {q0, q3}`. Verif.: `ε` ✓, `aa` ✓ (q1→q0), `ab` ✓ (q1→q3), `bb` ✓
 (q2→q3), `b` ✗ (q2), `ba` ✗ (q2→q5 basura).
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0(((q0)))
+    q1((q1))
+    q2((q2))
+    q3(((q3)))
+    q5((q5 basura))
+    q0 -->|a| q1
+    q0 -->|b| q2
+    q1 -->|a| q0
+    q1 -->|b| q3
+    q2 -->|a| q5
+    q2 -->|b| q3
+    q3 -->|a| q5
+    q3 -->|b| q2
+    q5 -->|"a,b"| q5
+```
+
 ---
 
 ## Pauta 3 — `L = {a(aba)ⁿ / n > 0}` (C3-2024)
@@ -94,6 +138,38 @@ cadena de 3 transiciones `a·b·a` con estados intermedios.)
 ⚠️ Nota: el enunciado dice `a(aba)ⁿ` pero la solución de la pauta desarrolla
 `a(bab)ⁿ`/`a(baba)ⁿ` en algunos pasos — al estudiar, fija tú la versión del
 lenguaje y sé consistente.
+
+**AFD expandido sobre `{a,b}`** (expandiendo `U=aba` en 3 transiciones con
+estados intermedios `qa` y `qb`):
+`Q = {q0, q1, qa, qb, q3, trap}`, `q0` inicial, `F = {q3}`:
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    qa((qa))
+    qb((qb))
+    q3(((q3)))
+    trap((trap))
+    q0 -->|a| q1
+    q0 -->|b| trap
+    q1 -->|a| qa
+    q1 -->|b| trap
+    qa -->|b| qb
+    qa -->|a| trap
+    qb -->|a| q3
+    qb -->|b| trap
+    q3 -->|a| qa
+    q3 -->|b| trap
+    trap -->|"a,b"| trap
+```
+
+Lectura de estados: `q0`=inicio; `q1`=leída la `a` inicial; `qa`=leída la
+primera `a` de un grupo `aba`; `qb`=leído `ab` del grupo; `q3`=completado al
+menos un `aba` (FINAL); `trap`=error.
+Verif.: `aaba` → q0→q1→qa→qb→q3 ✓; `aabaaba` → …→q3→qa→qb→q3 ✓; `aba` →
+q0→q1→trap (recha: `aba` ≠ a·(aba)^n) ✓.
 
 ---
 
@@ -116,6 +192,22 @@ Lectura: `q2` = solo ceros vistos; `q1` = exactamente un 1 visto (final);
 los 8 bits exactos de un "byte"); para forzar largo 8 harían falta contadores
 de posición (8×3 estados aprox.).
 
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1(((q1)))
+    q2((q2))
+    q3((q3 basura))
+    q0 -->|0| q2
+    q0 -->|1| q1
+    q1 -->|0| q1
+    q1 -->|1| q3
+    q2 -->|0| q2
+    q2 -->|1| q1
+    q3 -->|"0,1"| q3
+```
+
 ---
 
 ## Pauta 5 — `L = {binario múltiplo de 4}` (C4-413, verificada ✓)
@@ -132,6 +224,20 @@ Un binario es múltiplo de 4 ⟺ **termina en `00`**.
 
 Lectura: `q1` = el último fue `0`; `q2` = los dos últimos fueron `00` (final).
 **Verificada ✓** (borde: la palabra `0` = número cero queda fuera).
+
+```mermaid
+graph LR
+    ini([inicio]) --> q0
+    q0((q0))
+    q1((q1))
+    q2(((q2)))
+    q0 -->|0| q1
+    q0 -->|1| q0
+    q1 -->|0| q2
+    q1 -->|1| q0
+    q2 -->|0| q2
+    q2 -->|1| q0
+```
 
 ---
 

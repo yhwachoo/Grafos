@@ -102,3 +102,36 @@ f) Establece un camino y un ciclo **euleriano**, y otro **hamiltoniano**, si exi
 | **G** | — | — | — | 1 | 0 | 1 | — |
 
 *(Técnica: Ford-Fulkerson — módulo `04-grafos-ponderados.md`.)*
+
+Red de flujo (cada arista muestra su **capacidad**; fuente = A, sumidero = G):
+
+```mermaid
+graph LR
+    A(["A (fuente)"])
+    B((B))
+    C((C))
+    D((D))
+    E((E))
+    F((F))
+    G(["G (sumidero)"])
+    A -->|5| B
+    A -->|1| C
+    B -->|2| A
+    B -->|2| C
+    B -->|3| D
+    C -->|1| A
+    C -->|1| B
+    C -->|3| E
+    D -->|3| B
+    D -->|2| E
+    D -->|4| F
+    D -->|2| G
+    E -->|0| C
+    E -->|2| D
+    E -->|2| G
+    F -->|3| D
+    F -->|3| G
+    G -->|1| D
+    G -->|0| E
+    G -->|1| F
+```

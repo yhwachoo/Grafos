@@ -50,6 +50,30 @@ subconjuntos).
 
 construye el **diagrama de estados** y los **AFND y AFD equivalentes**.
 
+*(Diagrama del AFND-λ dado — las aristas `ε` son transiciones vacías):*
+
+```mermaid
+graph LR
+    ini([inicio]) --> p
+    p((p))
+    q((q))
+    r((r))
+    s(((s)))
+    p -->|a| q
+    p -->|a| s
+    p -->|b| p
+    p -->|ε| r
+    q -->|a| q
+    q -->|a| r
+    q -->|b| r
+    r -->|b| p
+    r -->|b| s
+    r -->|ε| q
+    s -->|a| s
+    s -->|ε| q
+    s -->|ε| r
+```
+
 **12.** En algunos lenguajes de programación los comentarios van entre `/*` y
 `*/`. Sea L el lenguaje de todas las cadenas de comentarios delimitados: todo
 elemento **empieza por `/*`** y **acaba por `*/`**, sin ningún `*/`
